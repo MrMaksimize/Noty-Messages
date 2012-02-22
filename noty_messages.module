@@ -44,6 +44,16 @@ function noty_messages_menu() {
     'access arguments' => array('administer noty messages'),
     'type' => MENU_NORMAL_ITEM,
   );
+  $items['admin/config/user-interface/noty-messages'] = array(
+    'title' => 'Configure noty Messages',
+    'description' => 'Settings to control noty messages',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('noty_messages_settings'),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer noty messages'),
+    'file' => 'noty_messages.admin.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
   return $items;
 }
 
@@ -67,7 +77,9 @@ function noty_messages_theme($existing, $type, $theme, $path) {
  *
  */
 function noty_messages_theme_registry_alter(&$theme_registry) {
-  $theme_registry['status_messages']['function'] = 'noty_messages_status_messages';
+  if (substr(current_path(), 0, 5) != 'admin'){
+    $theme_registry['status_messages']['function'] = 'noty_messages_status_messages';
+  }
 }
 
 
