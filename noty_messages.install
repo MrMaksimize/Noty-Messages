@@ -1,0 +1,10 @@
+<?php
+
+/**
+ * Implements hook_enable
+ */
+function noty_messages_enable(){
+  if ($path != libraries_get_path('noty')){
+    drupal_set_message(t('Please install noty library.'), $type = 'status');
+  }
+}
