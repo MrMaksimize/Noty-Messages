@@ -1,0 +1,22 @@
+<?php
+
+/**
+ * @file
+ * noty Messages
+ * A noty based override of Drupal's core message system
+ */
+
+/**
+ * Implements hook_permission().
+ */
+function noty_messages_permission() {
+  return array(
+    'view noty messages' => array(
+      'title' => 'View noty messages',
+    ),
+    'administer noty messages' => array(
+      'title' => 'Administer noty messages',
+    ),
+  );
+}
+
