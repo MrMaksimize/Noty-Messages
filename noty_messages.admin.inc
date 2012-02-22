@@ -29,75 +29,80 @@ function noty_messages_settings() {
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
   );
+  // position of messages on the screen
   $form['noty_messages_settings']['noty_messages_position'] = array(
     '#type' => 'select',
     '#title' => t('Position'),
     '#options' => array(
-      0 => t('Top'),
-      1 => t('Top Center'),
-      2 => t('Bottom'),
-      3 => t('Center'),
-      4 => t('Top Left'),
-      5 => t('Top Right'),
+      'pos_top' => t('Top'),
+      'pos_top_center' => t('Top Center'),
+      'pos_bottom' => t('Bottom'),
+      'pos_center' => t('Center'),
+      'pos_top_left' => t('Top Left'),
+      'pos_top_right' => t('Top Right'),
     ),
     '#description' => t('Where the messages should appear'),
+    '#default_value' => variable_get('noty_messages_position', NOTY_POSITION),
   );
+  // text alignment on messages
   $form['noty_messages_settings']['noty_messages_text_alignment'] = array(
     '#type' => 'select',
     '#title' => t('Text Alignment'),
     '#options' => array(
-      0 => t('Left'),
-      1 => t('Right'),
-      2 => t('Center'),
-      3 => t('Justify'),
+      'text_left' => t('Left'),
+      'text_right' => t('Right'),
+      'text_center' => t('Center'),
+      'text_justify' => t('Justify'),
     ),
     '#description' => t('Text alignment'),
+    '#default_value' => variable_get('noty_messages_text_alignment', NOTY_TEXT),
   );
   $form['noty_messages_settings']['noty_messages_speed'] = array(
     '#type' => 'textfield',
     '#title' => t('Speed'),
     '#field_suffix' => t('ms'),
     '#description' => t('The time in milliseconds for the notice to fade in.'),
-    '#default_value' => 500,
+    '#default_value' => variable_get('noty_messages_speed', NOTY_SPEED),
   );
   $form['noty_messages_settings']['noty_messages_timeout'] = array(
     '#type' => 'textfield',
     '#title' => t('Timeout'),
     '#field_suffix' => t('ms'),
     '#description' => t('The time in milliseconds the notice will display for, before fading out.'),
-    '#default_value' => 5000,
+    '#default_value' => variable_get('noty_messages_timeout', NOTY_TIMEOUT),
   );
   $form['noty_messages_settings']['noty_messages_closable'] = array(
     '#type' => 'checkbox',
     '#title' => t('Closable'),
-    '#description' => t('Check to pause when cursor is over the message.'),
-    '#default_value' => TRUE,
+    '#description' => t('Check to enable close button.'),
+    '#default_value' => variable_get('noty_messages_closable', NOTY_CLOSABLE),
   );
   $form['noty_messages_settings']['noty_messages_click_close'] = array(
     '#type' => 'checkbox',
     '#title' => t('Close on self click'),
     '#description' => t('Click to close'),
-    '#default_value' => TRUE,
+    '#default_value' => variable_get('noty_messages_click_to_close', NOTY_CLICK_TO_CLOSE),
   );
   $form['noty_messages_settings']['noty_messages_theme'] = array(
     '#type' => 'select',
     '#title' => t('Theme'),
     '#options' => array(
-      0 => t('Default'), //@todo pull themes
+      'default' => t('Default'), //@todo pull themes
     ),
-    '#description' => t('Text alignment'),
+    '#description' => t('Theme'),
+    '#default_value' => variable_get('noty_messages_theme', NOTY_THEME),
   );
   $form['noty_messages_settings']['noty_messages_modal'] = array(
     '#type' => 'checkbox',
     '#title' => t('Modal'),
     '#description' => t('Should the background fade out'),
-    '#default_value' => TRUE,
+    '#default_value' => variable_get('noty_messages_modal', NOTY_MODAL),
   );
   $form['noty_messages_settings']['noty_messages_modal_css'] = array(
     '#type' => 'textarea',
     '#title' => t('Modal CSS'),
     '#description' => t('CSS to apply to the modal layer'),
-    '#default_value' => '',
+    '#default_value' => variable_get('noty_messages_modal_css', NOTY_MODAL_CSS),
   );
 
   /*
@@ -115,5 +120,55 @@ function noty_messages_settings() {
    on close
    clear queue?
   */
+  // Visibility settings.
+  $form['visibility_title'] = array(
+    '#type' => 'item',
+    '#title' => t('Visibility settings'),
+  );
+  $form['visibility'] = array(
+    '#type' => 'vertical_tabs',
+  );
+  //@todo per path visibility
+  $form['visibility']['other'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Other'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+    '#group' => 'visibility',
+    '#weight' => 10,
+  );
+  $form['visibility']['other']['noty_messages_admin_path'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Disable noty messages on admin paths'),
+    '#description' => t('Checking this box will disable noty messages on admin paths,
+      as determined by the path_is_admin() function.'),
+    '#default_value' => variable_get('noty_messages_admin_path', NOTY_ON_ADMIN),
+  );
+  $form['actions'] = array('#type' => 'actions');
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save configuration'),
+  );
   return $form;
+}
+
+/**
+ * Form submission handler for the configuration form.
+ *
+ * @see noty_messages_settings()
+ */
+function noty_messages_settings_submit($form, &$form_state) {
+  if (!form_get_errors()) {
+    variable_set('noty_messages_position', $form_state['values']['noty_messages_position']);
+    variable_set('noty_messages_text_alignment', $form_state['values']['noty_messages_text_alignment']);
+    variable_set('noty_messages_speed', $form_state['values']['noty_messages_speed']);
+    variable_set('noty_messages_timeout', $form_state['values']['noty_messages_timeout']);
+    variable_set('noty_messages_closable', $form_state['values']['noty_messages_closable']);
+    variable_set('noty_messages_click_close', $form_state['values']['noty_messages_click_close']);
+    variable_set('noty_messages_theme', $form_state['values']['noty_messages_theme']);
+    variable_set('noty_messages_modal', $form_state['values']['noty_messages_modal']);
+    variable_set('noty_messages_modal_css', $form_state['values']['noty_messages_modal_css']);
+
+    drupal_set_message(t('The configuration has been saved.'));
+  }
 }

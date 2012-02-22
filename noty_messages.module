@@ -7,6 +7,19 @@
  */
 
 /**
+ * Define Default Values
+ */
+define('NOTY_POSITION', 'pos_top_center');
+define('NOTY_TEXT', 'text_center');
+define('NOTY_SPEED', 500);
+define('NOTY_TIMEOUT', 5000);
+define('NOTY_THEME', 'default');
+define('NOTY_CLOSABLE', TRUE);
+define('NOTY_CLICK_TO_CLOSE', TRUE);
+define('NOTY_MODAL', FALSE);
+define('NOTY_MODAL_CSS', '');
+define('NOTY_ON_ADMIN', FALSE);
+/**
  * Implements hook_permission().
  */
 function noty_messages_permission() {
