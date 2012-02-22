@@ -20,3 +20,59 @@ function noty_messages_permission() {
   );
 }
 
+/**
+ * Implements hook_help().
+ */
+function noty_messages_help($path, $arg) {
+  if ($path == 'admin/settings/noty') {
+    return t('Set your options and decide whether you want the noty styled messages
+      to appear on admin pages or not.');
+  }
+}
+
+/**
+ * Implements hook_menu().
+ */
+function noty_messages_menu() {
+  $items = array();
+  $items['notytesting'] = array(
+    'title' => 'Configure noty Messages',
+    'description' => 'Settings to control the noty messages output.',
+    'page callback' => 'notytesting',
+    'page arguments' => array(TRUE),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer noty messages'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+  return $items;
+}
+
+function notytesting($something){
+  drupal_set_message('poop');
+  return 'testing messages';
+}
+/**
+ * Implements hook_theme().
+ */
+function noty_messages_theme($existing, $type, $theme, $path) {
+  return array(
+    'original_status_messages' => array(
+      'variables' => array('type' => NULL, 'messages' => NULL),
+    )
+  );
+}
+
+/**
+ * Implements hook_theme_registry_alter().
+ *
+ */
+function noty_messages_theme_registry_alter(&$theme_registry) {
+  $theme_registry['status_messages']['function'] = 'noty_messages_status_messages';
+}
+
+
+function noty_messages_status_messages($variables) {
+  $display = $variables['display'];
+  $output = '';
+  $noty = NULL;
+}
