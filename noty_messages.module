@@ -96,8 +96,128 @@ function noty_messages_theme_registry_alter(&$theme_registry) {
 }
 
 
-function noty_messages_status_messages($variables) {
+/**
+ * Checks for the existence of devel code and returns boolean whether devel code xists
+ *
+ * @param $messages
+ *   An array, each containing a message.
+ *
+ * @return
+ *   Boolean.
+ */
+function _noty_messages_devel_check($messages) {
+  foreach ($messages as $message) {
+    if (strstr($message, '<pre>') || strstr($message, '<textarea') ||
+      strstr($message, 'krumo')) {
+      // Devel message found.
+      return FALSE;
+    }
+  }
+  // No devel messages.
+  return TRUE;
+}
+
+/**
+ * Checks to see whether the custom files exist.
+ *
+ * Checks current theme for custom CSS. Also returns the correct path
+ * depending on where the function has been called from.
+ *
+ * @param $themelayer
+ *   (optional) Boolean determines where function has been called from.
+ *
+ * @return
+ *    A string containing the path to the custom css or default one.
+ */
+function noty_messages_get_css($themelayer = FALSE) {
+  if ($themelayer == TRUE) {
+    // Called from theme function so path_to_theme returns incorrect result.
+    global $theme;
+    $custom_css = drupal_get_path('theme', $theme) . '/notycss/noty.css';
+  }
+  else {
+    // Called from non theme function (admin).
+    $custom_css = path_to_theme() . '/notycss/noty.css';
+  }
+  if (!is_file($custom_css)) {
+    return FALSE;
+  }
+  return $custom_css;
+}
+
+/*determines if a regular message should be returned or a noty message*/
+//returns TRUE/FALSE
+function noty_messages_type($type, $messages){
+  return TRUE;
+}
+
+// sets all the theme layer settings for the message
+function noty_messages_messages_setup($noties){
+  $module_path = drupal_get_path('module', 'noty_messages');
+  $noty_lib_path = libraries_get_path('noty');
+  drupal_add_js($noty_lib_path . '/js/jquery.noty.js');
+  drupal_add_css($noty_lib_path . '/css/jquery.noty.css');
+  $custom_css = noty_messages_get_css($themelayer = TRUE);
+  if (!empty($custom_css)){
+    drupal_add_css($custom_css);
+  }
+}
+
+function noty_messages_build_messages($type, $messages){
+  $a = $b;
+}
+
+/*main function for messages*/
+//determines which message to set, prepares and returns
+//callback from theme_registry alter
+function noty_messages_status_messages($variables){
   $display = $variables['display'];
   $output = '';
-  $noty = NULL;
+  $noties = array();
+  foreach(drupal_get_messages($display) as $type => $messages){
+    if (noty_messages_type($type, $messages)){
+      $noties[] = noty_messages_build_messages($type, $messages);
+    }
+    else{
+      $output .= theme('original_status_messages', array('type' => $type, 'messages' => $messages));
+    }
+  }
+  if (!empty($noties)){
+    $output .= noty_messages_messages_setup($noties);
+  }
+  return $output;
+}
+
+/**
+ * Return a themed set of status and/or error messages. The messages are grouped
+ * by type.
+ *
+ * This is the original output which we use if noty messages is turned off.
+ *
+ * @param $type
+ *   String containing a message type. Used to set the class on the message div.
+ *
+ * @param $messages
+ *   An array, each containing a message.
+ *
+ * @return
+ *   A string containing the formatted messages.
+ */
+function theme_original_status_messages($vars) {
+  $type = $vars['type'];
+  $messages = $vars['messages'];
+  $output = '';
+  $output .= "<div class=\"messages $type\">\n";
+  if (count($messages) > 1) {
+    $output .= " <ul>\n";
+    foreach ($messages as $message) {
+      $output .= '  <li>' . $message . "</li>\n";
+    }
+    $output .= " </ul>\n";
+  }
+  else {
+    $output .= $messages[0];
+  }
+  $output .= "</div>\n";
+  return $output;
 }

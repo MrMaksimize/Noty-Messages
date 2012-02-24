@@ -144,6 +144,20 @@ function noty_messages_settings() {
       as determined by the path_is_admin() function.'),
     '#default_value' => variable_get('noty_messages_admin_path', NOTY_ON_ADMIN),
   );
+  $form['visibility']['types'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Message Types'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+    '#group' => 'visibility',
+    '#weight' => 10,
+  );
+  $form['visibility']['types']['noty_messages_active_message_types'] = array(
+    '#type' => 'checkboxes',
+    '#title' => t('Enable Noty on these message types'),
+    '#description' => t('Picking a message type will allow you discern which message types will be noty enabled and which ones will be standard system message'),
+    '#options' => drupal_map_assoc(array('status', 'warning', 'error')),
+  );
   $form['actions'] = array('#type' => 'actions');
   $form['actions']['submit'] = array(
     '#type' => 'submit',
@@ -168,7 +182,8 @@ function noty_messages_settings_submit($form, &$form_state) {
     variable_set('noty_messages_theme', $form_state['values']['noty_messages_theme']);
     variable_set('noty_messages_modal', $form_state['values']['noty_messages_modal']);
     variable_set('noty_messages_modal_css', $form_state['values']['noty_messages_modal_css']);
-
+    variable_set('noty_messages_active_types', $form_state['values']['noty_messages_active_message_types']);
+    variable_set('noty_messages_admin_path', $form_state['values']['noty_messages_admin_path']);
     drupal_set_message(t('The configuration has been saved.'));
   }
 }
