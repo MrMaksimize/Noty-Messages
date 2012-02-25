@@ -158,13 +158,31 @@ function noty_messages_messages_setup($noties){
   drupal_add_js($noty_lib_path . '/js/jquery.noty.js');
   drupal_add_css($noty_lib_path . '/css/jquery.noty.css');
   $custom_css = noty_messages_get_css($themelayer = TRUE);
-  if (!empty($custom_css)){
+  if (!empty($custom_css)) {
     drupal_add_css($custom_css);
   }
+  drupal_add_js(array('noty_messages' => array(
+    'notyPosition' => variable_get('noty_messages_position', NOTY_POSITION),
+    'notyTextAlign' => variable_get('noty_messages_text_alignment', NOTY_TEXT),
+    'notySpeed' => variable_get('noty_messages_speed', NOTY_SPEED),
+    'notyTimeOut' => variable_get('noty_messages_timeout', NOTY_TIMEOUT),
+    'notyCloseable' => variable_get('noty_messages_closable', NOTY_CLOSABLE),
+    'notyClickToClose' => variable_get('noty_messages_click_to_close', NOTY_CLICK_TO_CLOSE),
+  )), 'setting');
+  //set up the opening and closing jquery
+  $jquery_inline = array(
+    'open'=> '(function($) {Drupal.behaviors.noty_messages = { attach: function(context) {',
+    'close' => '}}})(jQuery);',
+  );
+  return $jquery_inline;
 }
 
 function noty_messages_build_messages($type, $messages){
-  $a = $b;
+  $noties_of_type = array();
+    foreach($messages as $key => $message){
+      $noties_of_type[$key] = 'noty({text: "noty - a jquery notification library!"})';
+    }
+    return $noties_of_type;
 }
 
 /*main function for messages*/
@@ -174,17 +192,20 @@ function noty_messages_status_messages($variables){
   $display = $variables['display'];
   $output = '';
   $noties = array();
+  $noty_messages = '';
   foreach(drupal_get_messages($display) as $type => $messages){
     if (noty_messages_type($type, $messages)){
-      $noties[] = noty_messages_build_messages($type, $messages);
+      $noties[$type] = noty_messages_build_messages($type, $messages);
     }
     else{
       $output .= theme('original_status_messages', array('type' => $type, 'messages' => $messages));
     }
   }
   if (!empty($noties)){
-    $output .= noty_messages_messages_setup($noties);
+    $jq_inline = noty_messages_messages_setup($noties);
+    $noty_messages .= $noties['status']['0'];
   }
+  drupal_add_js($jq_inline['open'] . $noty_messages . $jq_inline['close'], 'inline');
   return $output;
 }
 
