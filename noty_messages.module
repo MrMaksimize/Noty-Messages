@@ -72,6 +72,7 @@ function noty_messages_menu() {
 
 function notytesting($something){
   drupal_set_message('poop');
+  drupal_set_message('poop2');
   return 'testing messages';
 }
 /**
@@ -148,39 +149,77 @@ function noty_messages_get_css($themelayer = FALSE) {
 /*determines if a regular message should be returned or a noty message*/
 //returns TRUE/FALSE
 function noty_messages_type($type, $messages){
-  return TRUE;
+  //assume TRUE
+  $is_noty = TRUE;
+  // check for lib path existence
+  if (!libraries_get_path('noty')) {
+    return FALSE;
+  }
+  // check type visibility
+  $active_types = variable_get('noty_messages_active_message_types', drupal_map_assoc(array('status', 'warning', 'error')));
+  if (empty($active_types[$type]) || $active_types[$type] != $type){
+    return FALSE;
+  }
+  // should the messages be shown on admin paths?
+  if (path_is_admin(current_path())){
+    if (variable_get('noty_messages_admin_path', NOTY_ON_ADMIN) != TRUE){
+      return FALSE;
+    }
+  }
+  // if no other conditions have return FALSE by now, show type
+  return $is_noty;
 }
 
 // sets all the theme layer settings for the message
 function noty_messages_messages_setup($noties){
   $module_path = drupal_get_path('module', 'noty_messages');
-  $noty_lib_path = libraries_get_path('noty');
-  drupal_add_js($noty_lib_path . '/js/jquery.noty.js');
-  drupal_add_css($noty_lib_path . '/css/jquery.noty.css');
+  $lib_path = libraries_get_path('noty');
+   drupal_add_js($module_path . '/js/promise.js');
+  drupal_add_js($lib_path . '/js/jquery.noty.js');
+  drupal_add_css($lib_path . '/css/jquery.noty.css');
   $custom_css = noty_messages_get_css($themelayer = TRUE);
   if (!empty($custom_css)) {
     drupal_add_css($custom_css);
   }
-  drupal_add_js(array('noty_messages' => array(
+  drupal_add_js(array('notyMessages' => array(
     'notyPosition' => variable_get('noty_messages_position', NOTY_POSITION),
     'notyTextAlign' => variable_get('noty_messages_text_alignment', NOTY_TEXT),
     'notySpeed' => variable_get('noty_messages_speed', NOTY_SPEED),
     'notyTimeOut' => variable_get('noty_messages_timeout', NOTY_TIMEOUT),
-    'notyCloseable' => variable_get('noty_messages_closable', NOTY_CLOSABLE),
+    'notyClosable' => variable_get('noty_messages_closable', NOTY_CLOSABLE),
     'notyClickToClose' => variable_get('noty_messages_click_to_close', NOTY_CLICK_TO_CLOSE),
   )), 'setting');
   //set up the opening and closing jquery
-  $jquery_inline = array(
+  $jq_inline = array(
     'open'=> '(function($) {Drupal.behaviors.noty_messages = { attach: function(context) {',
     'close' => '}}})(jQuery);',
   );
-  return $jquery_inline;
+  return $jq_inline;
 }
 
 function noty_messages_build_messages($type, $messages){
   $noties_of_type = array();
+  $noty_js_settings = 'Drupal.settings.notyMessages';
+  $noty_template = 'noty({
+                      layout: @position,
+                      text:"@noty_text",
+                      textAlign: @text_align,
+                      speed: @speed,
+                      timeout: @timeout,
+                      closable: @closable,
+                      closeOnSelfClick: @click_close
+                    });';
+  $replacements = array(
+    '@position' => $noty_js_settings . '.notyPosition',
+    '@text_align' => $noty_js_settings . '.notyTextAlign',
+    '@speed' => $noty_js_settings . '.notySpeed',
+    "@timeout" => $noty_js_settings . '.notyTimeOut',
+    "@closable" => $noty_js_settings . '.notyClosable',
+    "@click_close" => $noty_js_settings . '.notyClickToClose',
+  );
     foreach($messages as $key => $message){
-      $noties_of_type[$key] = 'noty({text: "noty - a jquery notification library!"})';
+      $replacements['@noty_text'] = $message;
+      $noties_of_type[$key] = format_string($noty_template, $replacements);
     }
     return $noties_of_type;
 }
@@ -202,10 +241,14 @@ function noty_messages_status_messages($variables){
     }
   }
   if (!empty($noties)){
+    $noty_out = '';
     $jq_inline = noty_messages_messages_setup($noties);
-    $noty_messages .= $noties['status']['0'];
+    foreach ($noties as $type => $messages){
+      $noty_out .= implode(' ', $messages);
+    }
+    //$output = '<script type = "text/javascript">' . $jq_inline['open'] . $noty_out . $jq_inline['close'] . '</script>';
+    $output = '<script type = "text/javascript">' . $jq_inline['open'] . 'noty({text: "test1"}); noty({text: "test2"});' . $jq_inline['close'] . '</script>';
   }
-  drupal_add_js($jq_inline['open'] . $noty_messages . $jq_inline['close'], 'inline');
   return $output;
 }
 
