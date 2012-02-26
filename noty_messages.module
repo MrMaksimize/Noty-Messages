@@ -90,9 +90,7 @@ function noty_messages_theme($existing, $type, $theme, $path) {
  *
  */
 function noty_messages_theme_registry_alter(&$theme_registry) {
-  if (substr(current_path(), 0, 5) != 'admin'){
-    $theme_registry['status_messages']['function'] = 'noty_messages_status_messages';
-  }
+  $theme_registry['status_messages']['function'] = 'noty_messages_status_messages';
 }
 
 
@@ -155,13 +153,14 @@ function noty_messages_type($type, $messages){
     return FALSE;
   }
   // check type visibility
-  $active_types = variable_get('noty_messages_active_message_types', drupal_map_assoc(array('status', 'warning', 'error')));
-  if (empty($active_types[$type]) || $active_types[$type] != $type){
+  $active_types = variable_get('noty_messages_is_noty', FALSE);
+  if (empty($active_types[$type])){
     return FALSE;
   }
   // should the messages be shown on admin paths?
   if (path_is_admin(current_path())){
-    if (variable_get('noty_messages_admin_path', NOTY_ON_ADMIN) != TRUE){
+    $admin_path_settings = variable_get('noty_messages_admin_path', NOTY_ON_ADMIN);
+    if (empty($admin_path_settings[$type])){
       return FALSE;
     }
   }
@@ -181,12 +180,13 @@ function noty_messages_messages_setup($noties){
     drupal_add_css($custom_css);
   }
   drupal_add_js(array('notyMessages' => array(
-    'notyPosition' => variable_get('noty_messages_position', NOTY_POSITION),
+    'notyLayout' => variable_get('noty_messages_position', NOTY_POSITION),
     'notyTextAlign' => variable_get('noty_messages_text_alignment', NOTY_TEXT),
     'notySpeed' => variable_get('noty_messages_speed', NOTY_SPEED),
-    'notyTimeOut' => variable_get('noty_messages_timeout', NOTY_TIMEOUT),
+    'notyTimeout' => variable_get('noty_messages_timeout', NOTY_TIMEOUT),
     'notyClosable' => variable_get('noty_messages_closable', NOTY_CLOSABLE),
-    'notyClickToClose' => variable_get('noty_messages_click_to_close', NOTY_CLICK_TO_CLOSE),
+    'notyClickClose' => variable_get('noty_messages_click_to_close', NOTY_CLICK_TO_CLOSE),
+    'notyModal' => variable_get('noty_messages_modal', NOTY_MODAL),
   )), 'setting');
   //set up the opening and closing jquery
   $jq_inline = array(
@@ -199,22 +199,23 @@ function noty_messages_messages_setup($noties){
 function noty_messages_build_messages($type, $messages){
   $noties_of_type = array();
   $noty_js_settings = 'Drupal.settings.notyMessages';
-  $noty_template = 'noty({
-                      layout: @position,
-                      text:"@noty_text",
-                      textAlign: @text_align,
-                      speed: @speed,
-                      timeout: @timeout,
-                      closable: @closable,
-                      closeOnSelfClick: @click_close
-                    });';
+  $noty_template =
+  'noty({
+    layout: @position,
+    text:"@noty_text",
+    textAlign: @text_align,
+    speed: @speed,
+    timeout: @timeout,
+    closable: @closable,
+    closeOnSelfClick: @click_close
+  });';
   $replacements = array(
-    '@position' => $noty_js_settings . '.notyPosition',
-    '@text_align' => $noty_js_settings . '.notyTextAlign',
-    '@speed' => $noty_js_settings . '.notySpeed',
-    "@timeout" => $noty_js_settings . '.notyTimeOut',
-    "@closable" => $noty_js_settings . '.notyClosable',
-    "@click_close" => $noty_js_settings . '.notyClickToClose',
+    '@position' => $noty_js_settings . '.notyPosition' . $type,
+    '@text_align' => $noty_js_settings . '.notyTextAlign' . $type,
+    '@speed' => $noty_js_settings . '.notySpeed' . $type,
+    "@timeout" => $noty_js_settings . '.notyTimeOut' . $type,
+    "@closable" => $noty_js_settings . '.notyClosable' . $type,
+    "@click_close" => $noty_js_settings . '.notyClickToClose' . $type,
   );
     foreach($messages as $key => $message){
       $replacements['@noty_text'] = $message;
@@ -245,7 +246,6 @@ function noty_messages_status_messages($variables){
     foreach ($noties as $type => $messages){
       $noty_out .= implode(' ', $messages);
     }
-    //$output = '<script type = "text/javascript">' . $jq_inline['open'] . $noty_out . $jq_inline['close'] . '</script>';
     $output = '<script type = "text/javascript">' . $jq_inline['open'] . $noty_out . $jq_inline['close'] . '</script>';
   }
   return $output;
