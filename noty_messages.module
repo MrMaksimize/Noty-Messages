@@ -9,13 +9,12 @@
 /**
  * Define Default Values
  */
-define('NOTY_POSITION', 'pos_top_center');
+define('NOTY_LAYOUT', 'layout_top_center');
 define('NOTY_TEXT', 'text_center');
 define('NOTY_SPEED', 500);
 define('NOTY_TIMEOUT', 5000);
-define('NOTY_THEME', 'default');
 define('NOTY_CLOSABLE', TRUE);
-define('NOTY_CLICK_TO_CLOSE', TRUE);
+define('NOTY_CLICK_CLOSE', TRUE);
 define('NOTY_MODAL', FALSE);
 define('NOTY_MODAL_CSS', '');
 define('NOTY_ON_ADMIN', FALSE);
@@ -247,7 +246,7 @@ function noty_messages_status_messages($variables){
       $noty_out .= implode(' ', $messages);
     }
     //$output = '<script type = "text/javascript">' . $jq_inline['open'] . $noty_out . $jq_inline['close'] . '</script>';
-    $output = '<script type = "text/javascript">' . $jq_inline['open'] . 'noty({text: "test1"}); noty({text: "test2"});' . $jq_inline['close'] . '</script>';
+    $output = '<script type = "text/javascript">' . $jq_inline['open'] . $noty_out . $jq_inline['close'] . '</script>';
   }
   return $output;
 }
