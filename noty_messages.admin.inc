@@ -23,6 +23,7 @@ function noty_messages_settings() {
     'click_close' => variable_get('noty_messages_click_close', NOTY_CLICK_CLOSE),
     'modal' => variable_get('noty_messages_modal', NOTY_MODAL),
     'admin_path' => variable_get('noty_messages_admin_path', NOTY_ON_ADMIN),
+    'type' => variable_get('noty_messages_type', NOTY_TYPE),
   );
   foreach ($message_types as $message_type){
     $settings_key = 'noty_messages_' . $message_type . '_settings';
@@ -40,6 +41,19 @@ function noty_messages_settings() {
       '#description' => t('Check to have this message displayed as a noty message'),
       '#default_value' => isset($defaults['is_noty'][$message_type]) ? $defaults['is_noty'][$message_type] : FALSE,
     );
+    // layout of messages on the screen
+    $form[$settings_key]['noty_messages_' . $message_type . '_type'] = array(
+      '#type' => 'select',
+      '#title' => t('Message Type'),
+      '#options' => array(
+        'alert' => t('Alert'),
+        'error' => t('Error'),
+        'success' => t('Success'),
+      ),
+      '#description' => t('Where the messages should appear on the screen'),
+      '#default_value' => isset($defaults['type'][$message_type]) ? $defaults['type'][$message_type] : NOTY_TYPE,
+    );
+
     // layout of messages on the screen
     $form[$settings_key]['noty_messages_' . $message_type . '_layout'] = array(
       '#type' => 'select',
@@ -139,6 +153,7 @@ function noty_messages_settings_submit($form, &$form_state) {
         $values['click_close'][$message_type] = $form_state['values']['noty_messages_' . $message_type . '_click_close'];
         $values['modal'][$message_type] = $form_state['values']['noty_messages_' . $message_type . '_modal'];
         $values['admin_path'][$message_type] = $form_state['values']['noty_messages_' . $message_type . '_admin_path'];
+        $values['type'][$message_type] = $form_state['values']['noty_messages_' . $message_type . '_type'];
       }
     }
     foreach ($values as $key => $value){
