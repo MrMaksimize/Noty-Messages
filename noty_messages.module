@@ -71,8 +71,11 @@ function noty_messages_menu() {
 }
 
 function notytesting($something){
-  drupal_set_message('poop');
-  drupal_set_message('poop2');
+  global $user;
+  drupal_set_message('status message', 'status');
+  drupal_set_message('warning message', 'warning');
+  drupal_set_message('error message', 'error');
+  //dsm($user);
   return 'testing messages';
 }
 /**
@@ -104,16 +107,15 @@ function noty_messages_theme_registry_alter(&$theme_registry) {
  * @return
  *   Boolean.
  */
-function _noty_messages_devel_check($messages) {
-  foreach ($messages as $message) {
-    if (strstr($message, '<pre>') || strstr($message, '<textarea') ||
-      strstr($message, 'krumo')) {
-      // Devel message found.
-      return FALSE;
-    }
+function _noty_messages_devel_check($message) {
+  if (strstr($message, '<pre>') || strstr($message, '<textarea') ||
+    strstr($message, 'krumo')) {
+    // Devel message found.
+    return TRUE;
   }
-  // No devel messages.
-  return TRUE;
+  else{
+    return FALSE;
+  }
 }
 
 /**
@@ -181,12 +183,12 @@ function noty_messages_messages_setup($noties){
     drupal_add_css($custom_css);
   }
   drupal_add_js(array('notyMessages' => array(
-    'notyLayout' => variable_get('noty_messages_position', NOTY_POSITION),
+    'notyLayout' => variable_get('noty_messages_position', NOTY_LAYOUT),
     'notyTextAlign' => variable_get('noty_messages_text_alignment', NOTY_TEXT),
     'notySpeed' => variable_get('noty_messages_speed', NOTY_SPEED),
     'notyTimeout' => variable_get('noty_messages_timeout', NOTY_TIMEOUT),
     'notyClosable' => variable_get('noty_messages_closable', NOTY_CLOSABLE),
-    'notyClickClose' => variable_get('noty_messages_click_to_close', NOTY_CLICK_TO_CLOSE),
+    'notyClickClose' => variable_get('noty_messages_click_to_close', NOTY_CLICK_CLOSE),
     'notyModal' => variable_get('noty_messages_modal', NOTY_MODAL),
     'notyType' => variable_get('noty_messages_type', NOTY_TYPE),
   )), 'setting');
@@ -214,7 +216,7 @@ function noty_messages_build_messages($type, $messages){
   });';
   $replacements = array(
     '@position' => $noty_js_settings . '.notyPosition.' . $type,
-    '@position' => $noty_js_settings . '.notyType.' . $type,
+    '@type' => $noty_js_settings . '.notyType.' . $type,
     '@text_align' => $noty_js_settings . '.notyTextAlign.' . $type,
     '@speed' => $noty_js_settings . '.notySpeed.' . $type,
     "@timeout" => $noty_js_settings . '.notyTimeOut.' . $type,
@@ -222,8 +224,13 @@ function noty_messages_build_messages($type, $messages){
     "@click_close" => $noty_js_settings . '.notyClickToClose.' . $type,
   );
     foreach($messages as $key => $message){
-      $replacements['@noty_text'] = $message;
-      $noties_of_type[$key] = format_string($noty_template, $replacements);
+      if (_noty_messages_devel_check($message)){
+        $noties_of_type['originals'][$key] = $message;
+      }
+      else{
+        $replacements['@noty_text'] = $message;
+        $noties_of_type['noties'][$key] = format_string($noty_template, $replacements);
+      }
     }
     return $noties_of_type;
 }
@@ -235,23 +242,27 @@ function noty_messages_status_messages($variables){
   $display = $variables['display'];
   $output = '';
   $noties = array();
-  $noty_messages = '';
+  $originals = array();
+  $noty_out = '';
+  $originals_out = '';
   foreach(drupal_get_messages($display) as $type => $messages){
     if (noty_messages_type($type, $messages)){
       $noties[$type] = noty_messages_build_messages($type, $messages);
     }
     else{
-      $output .= theme('original_status_messages', array('type' => $type, 'messages' => $messages));
+      $originals_out .= theme('original_status_messages', array('type' => $type, 'messages' => $messages));
     }
   }
   if (!empty($noties)){
     $noty_out = '';
     $jq_inline = noty_messages_messages_setup($noties);
     foreach ($noties as $type => $messages){
-      $noty_out .= implode(' ', $messages);
+      $noty_out .= implode(' ', $messages['noties']);
+      $originals_out .= theme('original_status_messages', array('type' => $type, 'messages' => $messages['originals']));
     }
-    $output = '<script type = "text/javascript">' . $jq_inline['open'] . $noty_out . $jq_inline['close'] . '</script>';
+    $output .= '<script type = "text/javascript">' . $jq_inline['open'] . $noty_out . $jq_inline['close'] . '</script>';
   }
+  $output .= $originals_out;
   return $output;
 }
 
