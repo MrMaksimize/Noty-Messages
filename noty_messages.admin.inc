@@ -14,7 +14,7 @@ function noty_messages_settings() {
   );
   $message_types = drupal_map_assoc(array('status', 'warning', 'error'));
   $defaults = array(
-    'is_noty' => variable_get('noty_messages_is_noty', FALSE),
+    'is_noty' => variable_get('noty_messages_is_noty', IS_NOTY),
     'layout' => variable_get('noty_messages_layout', NOTY_LAYOUT),
     'text_align' => variable_get('noty_messages_text_align', NOTY_TEXT),
     'speed' => variable_get('noty_messages_speed', NOTY_SPEED),
