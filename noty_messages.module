@@ -77,7 +77,7 @@ function notytesting($something){
   drupal_set_message('status message', 'status');
   drupal_set_message('warning message', 'warning');
   drupal_set_message('error message', 'error');
-  //dsm($user);
+  dsm($user);
   return 'testing messages';
 }
 /**
@@ -265,19 +265,16 @@ function noty_messages_status_messages($variables){
     if (!empty($noties[$type]['originals'])){
       array_unshift($originals[$type], $noties[$type]['originals']);
       //wipe out the originals and move the array one level up
-      $noties[$type] = $noties[$type]['noties'];
+      $noties[$type] = implode(' ', $noties[$type]['noties']);
     }
-    $noties[$type] = $noties[$type]['noties'];
+    $noties[$type] = implode(' ', $noties[$type]['noties']);
   }
   //render noties first
   $noties = array_filter($noties);
   $originals = array_filter($originals);
   if (!empty($noties)){
     $jq_inline = noty_messages_messages_setup($noties);
-    foreach ($noties as $type => $messages){
-      $noty_out .= implode(' ', $messages);
-    }
-    $noty_out = '<script type = "text/javascript">' . $jq_inline['open'] . $noty_out . $jq_inline['close'] . '</script>';
+    $noty_out = '<script type = "text/javascript">' . $jq_inline['open'] . implode(' ', $noties) . $jq_inline['close'] . '</script>';
   }
   if (!empty($originals)){
     foreach ($originals as $type => $messages){
