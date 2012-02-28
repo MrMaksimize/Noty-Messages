@@ -229,7 +229,7 @@ function noty_messages_build_messages($type, $messages){
   );
     foreach($messages as $key => $message){
       if (_noty_messages_devel_check($message)){
-        $noties_of_type['originals'][$key] = $message;
+        $noties_of_type['devels'][$key] = $message;
       }
       else{
         $replacements['@noty_text'] = $message;
@@ -247,31 +247,30 @@ function noty_messages_status_messages($variables){
   $output = '';
   $noties = array();
   $originals = array();
+  $devels = array();
   $noty_out = '';
   $originals_out = '';
+  $devels_out = '';
   $displayed_messages = drupal_get_messages($display);
 
   foreach($displayed_messages as $type => $messages){
-    $originals[$type] = array();
-
     if (noty_messages_type($type, $messages)){
       $noties[$type] = noty_messages_build_messages($type, $messages);
+      if (!empty($noties[$type]['devels'])){
+        $devels[$type] = $noties[$type]['devels'];
+      }
+      //wipe out the devels and move the array one level up
+      $noties[$type] = implode(' ', $noties[$type]['noties']);
     }
     else{
       //$originals_out .= theme('original_status_messages', array('type' => $type, 'messages' => $messages));
       $originals[$type] = $messages;
     }
-    //get the messages rejected from  devel check back up
-    if (!empty($noties[$type]['originals'])){
-      array_unshift($originals[$type], $noties[$type]['originals']);
-      //wipe out the originals and move the array one level up
-      $noties[$type] = implode(' ', $noties[$type]['noties']);
-    }
-    $noties[$type] = implode(' ', $noties[$type]['noties']);
   }
   //render noties first
   $noties = array_filter($noties);
   $originals = array_filter($originals);
+  $devels = array_filter($devels);
   if (!empty($noties)){
     $jq_inline = noty_messages_messages_setup($noties);
     $noty_out = '<script type = "text/javascript">' . $jq_inline['open'] . implode(' ', $noties) . $jq_inline['close'] . '</script>';
@@ -281,7 +280,12 @@ function noty_messages_status_messages($variables){
       $originals_out .= theme('original_status_messages', array('type' => $type, 'messages' => $messages));
     }
   }
-  $output = $noty_out . $originals_out;
+  if (!empty($devels)){
+    foreach ($devels as $type => $messages){
+      $devels_out .= implode(' ', $messages);
+    }
+  }
+  $output = $noty_out . $originals_out . $devels_out;
   return $output;
 }
 
