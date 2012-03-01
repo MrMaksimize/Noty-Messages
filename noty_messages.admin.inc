@@ -16,7 +16,7 @@ function noty_messages_settings() {
   );
   $message_types = drupal_map_assoc(array('global', 'status', 'warning', 'error'));
   $trimmed_types = drupal_map_assoc(array('status', 'warning', 'error'));
-  $defaults = _noty_messages_get_config_keys($message_types, TRUE, TRUE);
+  $defaults = _noty_messages_get_config_keys($message_types, TRUE, 'global');
   // Generate global configuration tab
   $default_is_noty = $defaults['is_noty'];
   unset($default_is_noty['global']);
@@ -31,7 +31,7 @@ function noty_messages_settings() {
   );
 
   // Generate fieldsets for the rest
-  $defaults = _noty_messages_get_config_keys($message_types, TRUE, FALSE);
+  $defaults = _noty_messages_get_config_keys($message_types, TRUE, 'single');
   foreach ($trimmed_types as $message_type){
     $disabled = FALSE;
     if ($defaults['use_global'][$message_type] == TRUE || $default_is_noty[$message_type] != $message_type){
@@ -170,11 +170,11 @@ function noty_messages_settings_submit($form, &$form_state) {
     $trimmed_types = drupal_map_assoc(array('status', 'warning', 'error'));
     $values = array();
     //get globals first across all messages
-    $config_keys = _noty_messages_get_config_keys(NULL, FALSE, TRUE);
+    $config_keys = _noty_messages_get_config_keys(NULL, FALSE, 'global');
     foreach ($config_keys as $key => $value){
       $values[$key] = _noty_messages_set_default($message_types, $form_state['values']['noty_messages_global_' . $key]);
     }
-    $config_keys = _noty_messages_get_config_keys(NULL, FALSE, FALSE);
+    $config_keys = _noty_messages_get_config_keys(NULL, FALSE, 'single');
     foreach ($trimmed_types as $message_type){
       // set use_global for all messages regardless
       $values['use_global'][$message_type] = $form_state['values']['noty_messages_' . $message_type . '_use_global'];
@@ -204,8 +204,21 @@ function _noty_messages_set_default($message_types, $value){
   return $return;
 }
 
-function _noty_messages_get_config_keys($message_types = NULL, $with_values = FALSE, $globals = FALSE){
-  //this doesn't work when only globals get set and not the others.
+function _noty_messages_get_config_keys($message_types = NULL, $with_values = FALSE, $set = 'all'){
+  //this doesn't work when only globals get set and not the others
+  if ($set == 'js'){
+    $config_keys = array(
+      'Layout' => '',
+      'TextAlign' => '',
+      'Speed' => '',
+      'Timeout' => '',
+      'Closable' => '',
+      'ClickClose' => '',
+      'Modal' => '',
+      'Type' => '',
+    );
+    return $config_keys;
+  }
   $config_keys = array(
     'layout' => '',
     'text_align' => '',
@@ -217,10 +230,11 @@ function _noty_messages_get_config_keys($message_types = NULL, $with_values = FA
     'admin_path' =>  '',
     'type' =>  '',
   );
-  if (!$globals) {
+  // if set is js, only the above
+  if ($set == 'single' || $set == 'all'){
     $config_keys['use_global'] =  '';
   }
-  else{
+  if ($set == 'global' || $set == 'all'){
     $config_keys['is_noty'] = '';
   }
   if ($with_values == FALSE){

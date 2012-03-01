@@ -158,13 +158,13 @@ function noty_messages_type($type, $messages){
     return FALSE;
   }
   // check type visibility
-  $active_types = variable_get('noty_messages_is_noty', FALSE);
+  $active_types = variable_get('noty_messages_is_noty', _noty_messages_set_default(array($type), NOTY_IS_NOTY));
   if (empty($active_types[$type])){
     return FALSE;
   }
   // should the messages be shown on admin paths?
   if (path_is_admin(current_path())){
-    $admin_path_settings = variable_get('noty_messages_admin_path', NOTY_ADMIN_PATH);
+    $admin_path_settings = variable_get('noty_messages_admin_path', _noty_messages_set_default(array($type), NOTY_ADMIN_PATH));
     if (empty($admin_path_settings[$type])){
       return FALSE;
     }
@@ -184,7 +184,15 @@ function noty_messages_messages_setup($noties){
   if (!empty($custom_css)) {
     drupal_add_css($custom_css);
   }
-  drupal_add_js(array('notyMessages' => array(
+  $js_settings = array();
+  $trimmed_types = drupal_map_assoc(array('status', 'warning', 'error')); // maybe use $noties var here
+  $config = _noty_messages_get_config_keys($trimmed_types, TRUE, 'js');
+  foreach ($config as $key => $value){
+    // do some string replacement so js is nice
+    $js_settings['noty' . $key] = $value;
+  }
+  drupal_add_js(array('notyMessages' => $js_settings));
+  /*drupal_add_js(array('notyMessages' => array(
     'notyLayout' => variable_get('noty_messages_layout', NOTY_LAYOUT),
     'notyTextAlign' => variable_get('noty_messages_text_align', NOTY_TEXT),
     'notySpeed' => variable_get('noty_messages_speed', NOTY_SPEED),
@@ -193,7 +201,7 @@ function noty_messages_messages_setup($noties){
     'notyClickClose' => variable_get('noty_messages_click_close', NOTY_CLICK_CLOSE),
     'notyModal' => variable_get('noty_messages_modal', NOTY_MODAL),
     'notyType' => variable_get('noty_messages_type', NOTY_TYPE),
-  )), 'setting');
+  )), 'setting');*/
   //set up the opening and closing jquery
   $jq_inline = array(
     'open'=> '(function($) {Drupal.behaviors.noty_messages = { attach: function(context) {',
@@ -207,7 +215,7 @@ function noty_messages_build_messages($type, $messages){
   $noty_js_settings = 'Drupal.settings.notyMessages';
   $noty_template =
   'noty({
-    layout: @position,
+    layout: @layout,
     type: @type,
     text:"@noty_text",
     textAlign: @text_align,
@@ -217,8 +225,9 @@ function noty_messages_build_messages($type, $messages){
     closeOnSelfClick: @click_close,
     modal: @modal
   });';
+  //@todo get config for this
   $replacements = array(
-    '@position' => $noty_js_settings . '.notyLayout.' . $type,
+    '@layout' => $noty_js_settings . '.notyLayout.' . $type,
     '@type' => $noty_js_settings . '.notyType.' . $type,
     '@text_align' => $noty_js_settings . '.notyTextAlign.' . $type,
     '@speed' => $noty_js_settings . '.notySpeed.' . $type,
