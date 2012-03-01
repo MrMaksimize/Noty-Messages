@@ -191,18 +191,7 @@ function noty_messages_messages_setup($noties){
     // do some string replacement so js is nice
     $js_settings['noty' . $key] = $value;
   }
-  drupal_add_js(array('notyMessages' => $js_settings));
-  /*drupal_add_js(array('notyMessages' => array(
-    'notyLayout' => variable_get('noty_messages_layout', NOTY_LAYOUT),
-    'notyTextAlign' => variable_get('noty_messages_text_align', NOTY_TEXT),
-    'notySpeed' => variable_get('noty_messages_speed', NOTY_SPEED),
-    'notyTimeout' => variable_get('noty_messages_timeout', NOTY_TIMEOUT),
-    'notyClosable' => variable_get('noty_messages_closable', NOTY_CLOSABLE),
-    'notyClickClose' => variable_get('noty_messages_click_close', NOTY_CLICK_CLOSE),
-    'notyModal' => variable_get('noty_messages_modal', NOTY_MODAL),
-    'notyType' => variable_get('noty_messages_type', NOTY_TYPE),
-  )), 'setting');*/
-  //set up the opening and closing jquery
+  drupal_add_js(array('notyMessages' => $js_settings), 'setting');
   $jq_inline = array(
     'open'=> '(function($) {Drupal.behaviors.noty_messages = { attach: function(context) {',
     'close' => '}}})(jQuery);',
@@ -330,4 +319,58 @@ function theme_original_status_messages($vars) {
   }
   $output .= "</div>\n";
   return $output;
+}
+
+
+function _noty_messages_set_default($message_types, $value){
+  $return = array();
+  if (is_array($value)){
+    return $value;
+  }
+  foreach ($message_types as $message_type){
+    $return[$message_type] = $value;
+  }
+  return $return;
+}
+
+function _noty_messages_get_config_keys($message_types = NULL, $with_values = FALSE, $set = 'all'){
+  //this doesn't work when only globals get set and not the others
+  if ($set == 'js'){
+    $config_keys = array(
+      'Layout' => '',
+      'TextAlign' => '',
+      'Speed' => '',
+      'Timeout' => '',
+      'Closable' => '',
+      'ClickClose' => '',
+      'Modal' => '',
+      'Type' => '',
+    );
+    return $config_keys;
+  }
+  $config_keys = array(
+    'layout' => '',
+    'text_align' => '',
+    'speed' => '',
+    'timeout' =>  '',
+    'closable' =>  '',
+    'click_close' =>  '',
+    'modal' =>  '',
+    'admin_path' =>  '',
+    'type' =>  '',
+  );
+  // if set is js, only the above
+  if ($set == 'single' || $set == 'all'){
+    $config_keys['use_global'] =  '';
+  }
+  if ($set == 'global' || $set == 'all'){
+    $config_keys['is_noty'] = '';
+  }
+  if ($with_values == FALSE){
+    return $config_keys;
+  }
+  foreach ($config_keys as $key => $value){
+    $config_keys[$key] = variable_get('noty_messages_' . $key, _noty_messages_set_default($message_types, constant(strtoupper('noty_' . $key))));
+  }
+  return $config_keys;
 }
