@@ -176,7 +176,9 @@ function noty_messages_settings_submit($form, &$form_state) {
     }
     $config_keys = _noty_messages_get_config_keys(NULL, FALSE, FALSE);
     foreach ($trimmed_types as $message_type){
-      if ($values['is_noty'][$message_type] == TRUE && $form_state['values']['noty_messages_' . $message_type . '_use_global'] == FALSE){
+      // set use_global for all messages regardless
+      $values['use_global'][$message_type] = $form_state['values']['noty_messages_' . $message_type . '_use_global'];
+      if ($values['is_noty'][$message_type] == TRUE && $values['use_global'][$message_type] == FALSE){
         //override defaults here
         foreach ($config_keys as $key => $value){
           $values[$key][$message_type] = $form_state['values']['noty_messages_' . $message_type . '_' . $key];
