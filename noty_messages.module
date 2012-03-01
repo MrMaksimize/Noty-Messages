@@ -10,16 +10,16 @@
  * Define Default Values
  */
 define('NOTY_LAYOUT', 'layout_top_center');
-define('NOTY_TEXT', 'text_center');
+define('NOTY_TEXT_ALIGN', 'text_center');
 define('NOTY_SPEED', 500);
 define('NOTY_TIMEOUT', 5000);
 define('NOTY_CLOSABLE', TRUE);
 define('NOTY_CLICK_CLOSE', TRUE);
 define('NOTY_MODAL', FALSE);
-define('NOTY_MODAL_CSS', '');
-define('NOTY_ON_ADMIN', FALSE);
+define('NOTY_ADMIN_PATH', FALSE);
 define('NOTY_TYPE', 'success');
-define('IS_NOTY', FALSE);
+define('NOTY_IS_NOTY', FALSE);
+define('NOTY_USE_GLOBAL', TRUE);
 
 /**
  * Implements hook_permission().
@@ -164,7 +164,7 @@ function noty_messages_type($type, $messages){
   }
   // should the messages be shown on admin paths?
   if (path_is_admin(current_path())){
-    $admin_path_settings = variable_get('noty_messages_admin_path', NOTY_ON_ADMIN);
+    $admin_path_settings = variable_get('noty_messages_admin_path', NOTY_ADMIN_PATH);
     if (empty($admin_path_settings[$type])){
       return FALSE;
     }
