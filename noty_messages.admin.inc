@@ -230,18 +230,4 @@ function _noty_messages_get_config_keys($message_types = NULL, $with_values = FA
     $config_keys[$key] = variable_get('noty_messages_' . $key, _noty_messages_set_default($message_types, constant(strtoupper('noty_' . $key))));
   }
   return $config_keys;
-  /*$config_keys = array(
-    'is_noty' => $with_values ? variable_get('noty_messages_is_noty', _noty_messages_set_default($message_types, NOTY_IS_NOTY)) : '',
-    'layout' => $with_values ? variable_get('noty_messages_layout', _noty_messages_set_default($message_types, NOTY_LAYOUT)) : '',
-    'text_align' => $with_values ? variable_get('noty_messages_text_align', _noty_messages_set_default($message_types, NOTY_TEXT)) : '',
-    'speed' => $with_values ? variable_get('noty_messages_speed', _noty_messages_set_default($message_types, NOTY_SPEED)) : '',
-    'timeout' => $with_values ? variable_get('noty_messages_timeout', _noty_messages_set_default($message_types, NOTY_TIMEOUT)) : '',
-    'closable' => $with_values ? variable_get('noty_messages_closable', _noty_messages_set_default($message_types, NOTY_CLOSABLE)) : '',
-    'click_close' => $with_values ? variable_get('noty_messages_click_close', _noty_messages_set_default($message_types, NOTY_CLICK_CLOSE)) : '',
-    'modal' => $with_values ? variable_get('noty_messages_modal', _noty_messages_set_default($message_types, NOTY_MODAL)) : '',
-    'admin_path' => $with_values ? variable_get('noty_messages_admin_path', _noty_messages_set_default($message_types, NOTY_ON_ADMIN)) : '',
-    'type' => $with_values ? variable_get('noty_messages_type', _noty_messages_set_default($message_types, NOTY_TYPE)) : '',
-    'use_global' => $with_values ? variable_get('noty_messages_use_global', _noty_messages_set_default($message_types, TRUE)) : '',
-  );*/
-  //return $config_keys;
 }
