@@ -32,9 +32,9 @@ function noty_messages_settings() {
 
   // Generate fieldsets for the rest
   $defaults = _noty_messages_get_config_keys($message_types, TRUE, 'single');
-  foreach ($trimmed_types as $message_type){
+  foreach ($trimmed_types as $message_type) {
     $disabled = FALSE;
-    if ($defaults['use_global'][$message_type] == TRUE || $default_is_noty[$message_type] != $message_type){
+    if ($defaults['use_global'][$message_type] == TRUE || $default_is_noty[$message_type] != $message_type) {
       $disabled = TRUE;
     }
     noty_messages_generate_settings_form($form, $message_type, $defaults, $disabled);
@@ -49,7 +49,7 @@ function noty_messages_settings() {
   return $form;
 }
 
-function noty_messages_generate_settings_form(&$form, $message_type, $defaults, $disabled = FALSE){
+function noty_messages_generate_settings_form(&$form, $message_type, $defaults, $disabled = FALSE) {
   $settings_key = 'noty_messages_' . $message_type . '_settings';
   $form[$settings_key] = array(
     '#type' => 'fieldset',
@@ -59,7 +59,7 @@ function noty_messages_generate_settings_form(&$form, $message_type, $defaults, 
     '#description' => t('Configuration for @type messages.', array('@type' => $message_type)),
     '#group' => 'noty_messages_settings',
   );
-  if ($message_type != 'global'){
+  if ($message_type != 'global') {
     $form[$settings_key]['noty_messages_' . $message_type . '_use_global'] = array(
       '#type' => 'checkbox',
       '#title' => t('Use Global Configuration'),
@@ -171,22 +171,22 @@ function noty_messages_settings_submit($form, &$form_state) {
     $values = array();
     //get globals first across all messages
     $config_keys = _noty_messages_get_config_keys(NULL, FALSE, 'global');
-    foreach ($config_keys as $key => $value){
+    foreach ($config_keys as $key => $value) {
       $values[$key] = _noty_messages_set_default($message_types, $form_state['values']['noty_messages_global_' . $key]);
     }
     $config_keys = _noty_messages_get_config_keys(NULL, FALSE, 'single');
-    foreach ($trimmed_types as $message_type){
+    foreach ($trimmed_types as $message_type) {
       // set use_global for all messages regardless
       $values['use_global'][$message_type] = $form_state['values']['noty_messages_' . $message_type . '_use_global'];
-      if ($values['is_noty'][$message_type] == TRUE && $values['use_global'][$message_type] == FALSE){
+      if ($values['is_noty'][$message_type] == TRUE && $values['use_global'][$message_type] == FALSE) {
         //override defaults here
-        foreach ($config_keys as $key => $value){
+        foreach ($config_keys as $key => $value) {
           $values[$key][$message_type] = $form_state['values']['noty_messages_' . $message_type . '_' . $key];
         }
       }
       //always save use_global ?
     }
-    foreach ($values as $key => $value){
+    foreach ($values as $key => $value) {
       variable_set('noty_messages_' . $key, $value);
     }
     drupal_set_message(t('The configuration has been saved.'));

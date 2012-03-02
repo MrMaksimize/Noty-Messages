@@ -8,3 +8,13 @@ function noty_messages_enable(){
     drupal_set_message(t('Please install noty library.'), $type = 'status');
   }
 }
+
+/**
+ * Implements hook_uninstall
+ */
+function noty_messages_uninstall(){
+  $config_keys = _noty_messages_get_config_keys(NULL, FALSE, 'all');
+  foreach ($config_keys as $key => $value){
+    variable_del('noty_messages_' . $key);
+  }
+}
