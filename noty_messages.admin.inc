@@ -172,7 +172,7 @@ function noty_messages_settings_submit($form, &$form_state) {
     //get globals first across all messages
     $config_keys = _noty_messages_get_config_keys(NULL, FALSE, 'global');
     foreach ($config_keys as $key => $value) {
-      $values[$key] = _noty_messages_set_default($message_types, $form_state['values']['noty_messages_global_' . $key]);
+      $values[$key] = _noty_messages_get_default($message_types, $form_state['values']['noty_messages_global_' . $key]);
     }
     $config_keys = _noty_messages_get_config_keys(NULL, FALSE, 'single');
     foreach ($trimmed_types as $message_type) {
