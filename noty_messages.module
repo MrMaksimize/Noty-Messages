@@ -388,40 +388,42 @@ function _noty_messages_get_default($message_types, $value) {
 function _noty_messages_get_config_keys($message_types = NULL, $with_values = FALSE, $set = 'all') {
   if ($set == 'js') {
     $config_keys = array(
-      'Layout' => '',
-      'TextAlign' => '',
-      'Speed' => '',
-      'Timeout' => '',
-      'Closable' => '',
-      'ClickClose' => '',
-      'Modal' => '',
-      'Type' => '',
+      'Layout',
+      'TextAlign',
+      'Speed',
+      'Timeout',
+      'Closable',
+      'ClickClose',
+      'Modal',
+      'Type',
     );
-    return $config_keys;
   }
-  $config_keys = array(
-    'layout' => '',
-    'text_align' => '',
-    'speed' => '',
-    'timeout' =>  '',
-    'closable' =>  '',
-    'click_close' =>  '',
-    'modal' =>  '',
-    'admin_path' =>  '',
-    'type' =>  '',
-  );
+  else{
+    $config_keys = array(
+      'layout',
+      'text_align',
+      'speed',
+      'timeout',
+      'closable',
+      'click_close',
+      'modal',
+      'admin_path',
+      'type',
+    );
+  }
   // if set is js, only the above
   if ($set == 'single' || $set == 'all') {
-    $config_keys['use_global'] =  '';
+    $config_keys[] = 'use_global';
   }
   if ($set == 'global' || $set == 'all') {
-    $config_keys['is_noty'] = '';
+    $config_keys[] = 'is_noty';
   }
   if ($with_values == FALSE) {
     return $config_keys;
   }
   foreach ($config_keys as $key => $value) {
-    $config_keys[$key] = variable_get('noty_messages_' . $key, _noty_messages_get_default($message_types, constant(strtoupper('noty_' . $key))));
+    $config_keys[$value] = variable_get('noty_messages_' . $value, _noty_messages_get_default($message_types, constant(strtoupper('noty_' . $value))));
+    unset($config_keys[$key]);
   }
   return $config_keys;
 }

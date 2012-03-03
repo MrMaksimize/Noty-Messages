@@ -20,21 +20,33 @@ function noty_messages_settings() {
   // Generate global configuration tab
   $default_is_noty = $defaults['is_noty'];
   unset($default_is_noty['global']);
-  noty_messages_generate_settings_form($form, 'global', $defaults, FALSE);
+  $lib_exists = is_file(libraries_get_path('noty') . '/js/jquery.noty.js');
+  $disabled = FALSE;
+  if (!$lib_exists){
+    $form['noty_messages_code_status'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Purr Messages settings'),
+      '#weight' => '-10',
+      '#description' => t('Please download the noty library from https://github.com/needim/noty and place it in the libraries/noty directory. So that jquery.noty.js file is located in libraries/noty/js/jquery.noty.js'),
+    );
+    $disabled = TRUE;
+  }
+  noty_messages_generate_settings_form($form, 'global', $defaults, $disabled);
   // append the is_noty config
   $form['noty_messages_global_settings']['noty_messages_global_is_noty'] = array(
     '#type' => 'checkboxes',
     '#options' => drupal_map_assoc($trimmed_types),
     '#title' => t('Messages to display in noty format'),
     '#default_value' => $defaults['is_noty'],
-    '#weight' => '-20',
+    '#weight' => '-5',
+    '#disabled' => $disabled,
   );
 
   // Generate fieldsets for the rest
   $defaults = _noty_messages_get_config_keys($message_types, TRUE, 'single');
   foreach ($trimmed_types as $message_type) {
     $disabled = FALSE;
-    if ($defaults['use_global'][$message_type] == TRUE || $default_is_noty[$message_type] != $message_type) {
+    if ($defaults['use_global'][$message_type] == TRUE || $default_is_noty[$message_type] != $message_type || !$lib_exists) {
       $disabled = TRUE;
     }
     noty_messages_generate_settings_form($form, $message_type, $defaults, $disabled);
@@ -65,6 +77,7 @@ function noty_messages_generate_settings_form(&$form, $message_type, $defaults, 
       '#title' => t('Use Global Configuration'),
       '#description' => t('Check to ignore the message settings in this pane and relegate to globals'),
       '#default_value' => $defaults['use_global'][$message_type],
+      '#disabled' => $disabled,
     );
   }
   // layout of messages on the screen
@@ -171,7 +184,7 @@ function noty_messages_settings_submit($form, &$form_state) {
     $values = array();
     //get globals first across all messages
     $config_keys = _noty_messages_get_config_keys(NULL, FALSE, 'global');
-    foreach ($config_keys as $key => $value) {
+    foreach ($config_keys as $key) {
       $values[$key] = _noty_messages_get_default($message_types, $form_state['values']['noty_messages_global_' . $key]);
     }
     $config_keys = _noty_messages_get_config_keys(NULL, FALSE, 'single');
@@ -180,7 +193,7 @@ function noty_messages_settings_submit($form, &$form_state) {
       $values['use_global'][$message_type] = $form_state['values']['noty_messages_' . $message_type . '_use_global'];
       if ($values['is_noty'][$message_type] == TRUE && $values['use_global'][$message_type] == FALSE) {
         //override defaults here
-        foreach ($config_keys as $key => $value) {
+        foreach ($config_keys as $key) {
           $values[$key][$message_type] = $form_state['values']['noty_messages_' . $message_type . '_' . $key];
         }
       }
