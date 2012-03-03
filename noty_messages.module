@@ -385,7 +385,17 @@ function _noty_messages_get_default($message_types, $value) {
  *   An array of config settings
  */
 function _noty_messages_get_config_keys($message_types = NULL, $with_values = FALSE, $set = 'all') {
-  if ($set == 'js') {
+  $config_keys = array(
+    'layout' => 'Layout',
+    'text_align' => 'TextAlign',
+    'speed' => 'Speed',
+    'timeout' => 'Timeout',
+    'closable' => 'Closable',
+    'click_close' => 'ClickClose',
+    'modal' => 'Modal',
+    'type' => 'Type',
+  );
+  /*if ($set == 'js') {
     $config_keys = array(
       'Layout',
       'TextAlign',
@@ -409,20 +419,32 @@ function _noty_messages_get_config_keys($message_types = NULL, $with_values = FA
       'admin_path',
       'type',
     );
-  }
-  // if set is js, only the above
+  }*/
   if ($set == 'single' || $set == 'all') {
-    $config_keys[] = 'use_global';
+    $config_keys['use_global'] = 'use_global';
   }
   if ($set == 'global' || $set == 'all') {
-    $config_keys[] = 'is_noty';
+    $config_keys['is_noty'] = 'is_noty';
   }
   if ($with_values == FALSE) {
-    return $config_keys;
+    if ($set != 'js'){
+      $config_keys = array_flip($config_keys);
+    }
+    return array_values($config_keys);
   }
-  foreach ($config_keys as $key => $value) {
-    $config_keys[$value] = variable_get('noty_messages_' . $value, _noty_messages_get_default($message_types, constant(strtoupper('noty_' . $value))));
-    unset($config_keys[$key]);
+  if ($set != 'js'){
+    $config_keys['admin_path'] = 'admin_path';
+    $config_keys = array_values(array_flip($config_keys));
+    foreach ($config_keys as $key => $value) {
+      $config_keys[$value] = variable_get('noty_messages_' . $value, _noty_messages_get_default($message_types, constant(strtoupper('noty_' . $value))));
+      unset($config_keys[$key]);
+    }
+  }
+  else{
+    foreach ($config_keys as $key => $value){
+      $config_keys[$value] = variable_get('noty_messages_' . $key, _noty_messages_get_default($message_types, constant(strtoupper('noty_' . $key))));
+      unset($config_keys[$key]);
+    }
   }
   return $config_keys;
 }
@@ -437,10 +459,10 @@ function _noty_messages_get_config_keys($message_types = NULL, $with_values = FA
  */
 function _noty_messages_get_types($options){
   $types = drupal_map_assoc(array('status', 'warning', 'error'));
-  if ($options['trimmed']) {
+  if (!empty($options['trimmed'])) {
     $return['trimmed'] = $types;
   }
-  if ($options['all']){
+  if (!empty($options['all'])){
     $return['all'] = array_merge($types, drupal_map_assoc(array('global')));
   }
   return $return;
