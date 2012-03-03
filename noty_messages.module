@@ -80,6 +80,7 @@ function notytesting($something) {
   dsm($user);
   return 'testing messages';
 }
+
 /**
  * Implements hook_theme().
  */
@@ -190,7 +191,7 @@ function noty_messages_type($type, $messages) {
  * @return
  *   An array with opening and closing jquery code
  */
-function noty_messages_messages_setup($noties) {
+function noty_messages_messages_setup($noties = NULL) {
   $module_path = drupal_get_path('module', 'noty_messages');
   $lib_path = libraries_get_path('noty');
   drupal_add_js($module_path . '/js/promise.js');
@@ -201,8 +202,8 @@ function noty_messages_messages_setup($noties) {
     drupal_add_css($custom_css);
   }
   $js_settings = array();
-  $trimmed_types = _noty_messages_get_types(array('trimmed' => TRUE)); // maybe use $noties var here
-  $config = _noty_messages_get_config_keys($trimmed_types, TRUE, 'js');
+  $message_types = _noty_messages_get_types(array('trimmed' => TRUE)); // maybe use $noties var here
+  $config = _noty_messages_get_config_keys($message_types['trimmed'], TRUE, 'js');
   foreach ($config as $key => $value) {
     // do some string replacement so js is nice
     $js_settings['noty' . $key] = $value;
@@ -457,7 +458,7 @@ function _noty_messages_get_config_keys($message_types = NULL, $with_values = FA
  * @return
  *   an array of types
  */
-function _noty_messages_get_types($options){
+function _noty_messages_get_types($options = array('trimmed' => TRUE, 'all' => TRUE)){
   $types = drupal_map_assoc(array('status', 'warning', 'error'));
   if (!empty($options['trimmed'])) {
     $return['trimmed'] = $types;
