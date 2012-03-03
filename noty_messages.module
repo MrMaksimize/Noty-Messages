@@ -100,7 +100,7 @@ function noty_messages_theme_registry_alter(&$theme_registry) {
 
 
 /**
- * Checks for the existence of devel code and returns boolean whether devel code xists
+ * Checks for the existence of devel code
  *
  * @param $messages
  *   An array, each containing a message.
@@ -149,6 +149,7 @@ function noty_messages_get_css($themelayer = FALSE) {
 
 /**
  * Determines if a regular message should be returned or a noty message
+ *
  * @param $type
  *   Type of messages
  * @param $messages
@@ -157,10 +158,10 @@ function noty_messages_get_css($themelayer = FALSE) {
  *   a BOOL deciding if noty messages should be rendered of regular ones
  */
 function noty_messages_type($type, $messages) {
-  //assume TRUE
+  // assume TRUE
   $is_noty = TRUE;
   // check for lib path existence
-  if (!libraries_get_path('noty')) {
+  if (!is_file(libraries_get_path('noty') . '/js/jquery.noty.js')) {
     return FALSE;
   }
   // check type visibility
@@ -200,7 +201,7 @@ function noty_messages_messages_setup($noties) {
     drupal_add_css($custom_css);
   }
   $js_settings = array();
-  $trimmed_types = drupal_map_assoc(array('status', 'warning', 'error')); // maybe use $noties var here
+  $trimmed_types = _noty_messages_get_types(array('trimmed' => TRUE)); // maybe use $noties var here
   $config = _noty_messages_get_config_keys($trimmed_types, TRUE, 'js');
   foreach ($config as $key => $value) {
     // do some string replacement so js is nice
@@ -221,7 +222,8 @@ function noty_messages_messages_setup($noties) {
  * @param $messages
  *   array of messages to build
  *
- * @return an array of messages, differentiated by whether they're going to noty or drupal default
+ * @return
+ *   an array of messages, differentiated by whether they're going to noty or drupal default
  */
 function noty_messages_build_messages($type, $messages) {
   $noties_of_type = array();
@@ -238,7 +240,7 @@ function noty_messages_build_messages($type, $messages) {
     closeOnSelfClick: @click_close,
     modal: @modal
   });';
-  //@todo get config for this
+  // @todo get config for this
   $replacements = array(
     '@layout' => $noty_js_settings . '.notyLayout.' . $type,
     '@type' => $noty_js_settings . '.notyType.' . $type,
@@ -262,8 +264,6 @@ function noty_messages_build_messages($type, $messages) {
 }
 
 /**
- * Main controller for messages display.
- * This is a callback for theme_registry_alter
  * Decides which messages should be noties, builds them, and returns them to the theme
  */
 function noty_messages_status_messages($variables) {
@@ -283,15 +283,14 @@ function noty_messages_status_messages($variables) {
       if (!empty($noties[$type]['devels'])) {
         $devels[$type] = $noties[$type]['devels'];
       }
-      //wipe out the devels and move the array one level up
+      // wipe out the devels and move the array one level up
       $noties[$type] = implode(' ', $noties[$type]['noties']);
     }
     else{
-      //$originals_out .= theme('original_status_messages', array('type' => $type, 'messages' => $messages));
       $originals[$type] = $messages;
     }
   }
-  //render noties first
+  // render noties first
   $noties = array_filter($noties);
   $originals = array_filter($originals);
   $devels = array_filter($devels);
@@ -314,8 +313,7 @@ function noty_messages_status_messages($variables) {
 }
 
 /**
- * Return a themed set of status and/or error messages. The messages are grouped
- * by type.
+ * Return a themed set of status and/or error messages grouped by type
  *
  * This is the original output which we use if noty messages is turned off.
  *
@@ -355,7 +353,8 @@ function theme_original_status_messages($vars) {
  * @param $value
  *   The value to set
  *
- * @return a constructed array of values
+ * @return
+ *   a constructed array of values
  */
 function _noty_messages_get_default($message_types, $value) {
   $return = array();
@@ -426,4 +425,23 @@ function _noty_messages_get_config_keys($message_types = NULL, $with_values = FA
     unset($config_keys[$key]);
   }
   return $config_keys;
+}
+/**
+ * Helper function for getting message types
+ *
+ * @param $options
+ *   which types to include
+ *
+ * @return
+ *   an array of types
+ */
+function _noty_messages_get_types($options){
+  $types = drupal_map_assoc(array('status', 'warning', 'error'));
+  if ($options['trimmed']) {
+    $return['trimmed'] = $types;
+  }
+  if ($options['all']){
+    $return['all'] = array_merge($types, drupal_map_assoc(array('global')));
+  }
+  return $return;
 }

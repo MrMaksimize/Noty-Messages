@@ -3,7 +3,7 @@
 /**
  * Implements hook_enable
  */
-function noty_messages_enable(){
+function noty_messages_enable() {
   if ($path != libraries_get_path('noty')){
     drupal_set_message(t('Please install noty library.'), $type = 'status');
   }
@@ -12,9 +12,9 @@ function noty_messages_enable(){
 /**
  * Implements hook_uninstall
  */
-function noty_messages_uninstall(){
+function noty_messages_uninstall() {
   $config_keys = _noty_messages_get_config_keys(NULL, FALSE, 'all');
-  foreach ($config_keys as $key => $value){
+  foreach ($config_keys as $key) {
     variable_del('noty_messages_' . $key);
   }
 }
