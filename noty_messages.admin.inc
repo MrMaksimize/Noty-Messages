@@ -46,7 +46,7 @@ function noty_messages_settings() {
   $defaults = _noty_messages_get_config_keys($message_types['all'], TRUE, 'single');
   foreach ($message_types['trimmed'] as $message_type) {
     $disabled = FALSE;
-    if ($defaults['use_global'][$message_type] == TRUE || $default_is_noty[$message_type] == 0 || !$lib_exists) {
+    if ((bool)$defaults['use_global'][$message_type] == TRUE || (bool)$default_is_noty[$message_type] == FALSE || !$lib_exists) {
       $disabled = TRUE;
     }
     noty_messages_generate_settings_form($form, $message_type, $defaults, $disabled);
@@ -176,10 +176,11 @@ function noty_messages_generate_settings_form(&$form, $message_type, $defaults, 
     '#default_value' => $defaults['admin_path'][$message_type],
     '#disabled' => $disabled,
   );
-  $form[$settings_key]['noty_messages_test_noty'] = array(
+  $form[$settings_key]['noty_messages_' . $message_type . '_test_noty'] = array(
     '#type' => 'button',
     '#value' => t("Test @type messages", array('@type' => $message_type)),
     '#name' => $message_type,
+    '#attributes' => array('class' => array('test-noty-messages')),
   );
 }
 
