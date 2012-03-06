@@ -1,11 +1,11 @@
 (function($) {
   Drupal.behaviors.noty_messages = {
     attach: function(context) {
-    //butt click fxn
+    // button click
     $('.test-noty-messages').click(function(event){
       event.preventDefault();
       event.stopPropagation();
-      //get name
+      // get name
       var name = $(this).attr('name');
       // get current actives
       if (name == 'global' || $('#edit-noty-messages-global-is-noty-' + name).is(':checked')){
@@ -26,10 +26,6 @@
       else{
         alert('This is not a noty message');
       }
-      //if (name != 'global' && )
-      //for (setting in Drupal.settings.notyMessages){
-
-      //}
       return false;
     });
     }

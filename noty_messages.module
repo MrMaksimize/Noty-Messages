@@ -51,7 +51,7 @@ function noty_messages_help($path, $arg) {
 function noty_messages_menu() {
   $items = array();
   $items['notytesting'] = array(
-    'title' => 'Configure noty Messages',
+    'title' => 'Noty messages',
     'description' => 'Settings to control the noty messages output.',
     'page callback' => 'notytesting',
     'page arguments' => array(TRUE),
