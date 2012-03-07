@@ -11,8 +11,6 @@
       if (name == 'global' || $('#edit-settings-global-is-noty-' + name).is(':checked')){
         // change settings
         var notySettings = Drupal.settings.notyMessages;
-        //edit-settings-global-is-noty-status
-        //edit-settings-global-type
         notySettings.notyType[name] = $('#edit-settings-' + name + '-type :selected').val();
         notySettings.notyLayout[name] = $('#edit-settings-' + name + '-layout :selected').val();
         notySettings.notyTextAlign[name] = $('#edit-settings-' + name + '-text-align :selected').val();
@@ -21,7 +19,6 @@
         notySettings.notyClosable[name] = $('#edit-settings-' + name + '-closable').is(':checked');
         notySettings.notyClickClose[name] = $('#edit-settings-' + name + '-click-close').is(':checked');
         notySettings.notyModal[name] = $('#edit-settings-' + name + '-modal').is(':checked');
-        console.log(notySettings);
         testMessages = new Array('This is a ' + name + ' message', 'And this is another one!');
         new notyMessages.renderType(name, testMessages, notySettings);
       }

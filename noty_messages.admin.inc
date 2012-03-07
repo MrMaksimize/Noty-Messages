@@ -68,7 +68,6 @@ function noty_messages_admin_settings() {
 }
 
 function noty_messages_generate_settings_form(&$form, $message_type, $defaults, $disabled = FALSE) {
-  //$settings_key = 'noty_messages_' . $message_type . '_settings';
   $settings_key = $message_type;
   $form['settings'][$message_type] = array(
     '#type' => 'fieldset',
@@ -83,7 +82,7 @@ function noty_messages_generate_settings_form(&$form, $message_type, $defaults, 
       '#type' => 'checkbox',
       '#title' => t('Use global configuration'),
       '#description' => t('Check to ignore the message settings in this pane and relegate to globals'),
-      '#default_value' => empty($defaults['use_global'][$message_type]) ? TRUE : FALSE,
+      '#default_value' => empty($defaults['use_global'][$message_type]) ? FALSE : TRUE,
     );
   }
   // Message display
@@ -208,6 +207,8 @@ function noty_messages_admin_settings_submit($form, &$form_state) {
     foreach ($single_settings as $message_type => $settings){
       $config_keys = _noty_messages_get_config_keys(NULL, FALSE, 'single');
       $settings = array_intersect_key($settings, array_flip($config_keys));
+      // always set use global parameter
+      $values['use_global'][$message_type] = $settings['use_global'];
       // check to make sure that it's not set to use globals and that it is a noty message type
       if ((bool)$settings['use_global'] != TRUE && (bool)$values['is_noty'][$message_type] != FALSE){
         // get the settings in
