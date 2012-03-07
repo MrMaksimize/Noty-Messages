@@ -8,17 +8,19 @@
       // get name
       var name = $(this).attr('name');
       // get current actives
-      if (name == 'global' || $('#edit-noty-messages-global-is-noty-' + name).is(':checked')){
+      if (name == 'global' || $('#edit-settings-global-is-noty-' + name).is(':checked')){
         // change settings
         var notySettings = Drupal.settings.notyMessages;
-        notySettings.notyType[name] = $('#edit-noty-messages-' + name + '-type :selected').val();
-        notySettings.notyLayout[name] = $('#edit-noty-messages-' + name + '-layout :selected').val();
-        notySettings.notyTextAlign[name] = $('#edit-noty-messages-' + name + '-text-align :selected').val();
-        notySettings.notySpeed[name] = $('#edit-noty-messages-' + name + '-speed').val();
-        notySettings.notyTimeout[name] = $('#edit-noty-messages-' + name + '-timeout').val();
-        notySettings.notyClosable[name] = $('#edit-noty-messages-' + name + '-closable').is(':checked');
-        notySettings.notyClickClose[name] = $('#edit-noty-messages-' + name + '-click-close').is(':checked');
-        notySettings.notyModal[name] = $('#edit-noty-messages-' + name + '-modal').is(':checked');
+        //edit-settings-global-is-noty-status
+        //edit-settings-global-type
+        notySettings.notyType[name] = $('#edit-settings-' + name + '-type :selected').val();
+        notySettings.notyLayout[name] = $('#edit-settings-' + name + '-layout :selected').val();
+        notySettings.notyTextAlign[name] = $('#edit-settings-' + name + '-text-align :selected').val();
+        notySettings.notySpeed[name] = $('#edit-settings-' + name + '-speed').val();
+        notySettings.notyTimeout[name] = $('#edit-settings-' + name + '-timeout').val();
+        notySettings.notyClosable[name] = $('#edit-settings-' + name + '-closable').is(':checked');
+        notySettings.notyClickClose[name] = $('#edit-settings-' + name + '-click-close').is(':checked');
+        notySettings.notyModal[name] = $('#edit-settings-' + name + '-modal').is(':checked');
         console.log(notySettings);
         testMessages = new Array('This is a ' + name + ' message', 'And this is another one!');
         new notyMessages.renderType(name, testMessages, notySettings);

@@ -63,7 +63,7 @@ function noty_messages_menu() {
     'title' => 'Configure noty Messages',
     'description' => 'Settings to control noty messages',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('noty_messages_settings'),
+    'page arguments' => array('noty_messages_admin_settings'),
     'access callback' => 'user_access',
     'access arguments' => array('administer noty messages'),
     'file' => 'noty_messages.admin.inc',
@@ -411,6 +411,7 @@ function _noty_messages_get_config_keys($message_types = NULL, $with_values = FA
   }
   if ($with_values == FALSE) {
     if ($set != 'js'){
+      $config_keys['admin_path'] = 'admin_path'; //@todo cleanup
       $config_keys = array_flip($config_keys);
     }
     return array_values($config_keys);
