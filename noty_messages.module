@@ -91,7 +91,7 @@ function noty_messages_theme($existing, $type, $theme, $path) {
   return array(
     'original_status_messages' => array(
       'variables' => array('type' => NULL, 'messages' => NULL),
-    )
+    ),
   );
 }
 
@@ -106,11 +106,11 @@ function noty_messages_theme_registry_alter(&$theme_registry) {
 /**
  * Checks for the existence of devel code
  *
- * @param $messages
- *   An array, each containing a message.
+ * @param string $message
+ *   message string
  *
- * @return
- *   Boolean.
+ * @return BOOL
+ *   TRUE / FALSE based on whether devel msg or not
  */
 function _noty_messages_devel_check($message) {
   if (strstr($message, '<pre>') || strstr($message, '<textarea') ||
@@ -118,7 +118,7 @@ function _noty_messages_devel_check($message) {
     // Devel message found.
     return TRUE;
   }
-  else{
+  else {
     return FALSE;
   }
 }
@@ -129,11 +129,11 @@ function _noty_messages_devel_check($message) {
  * Checks current theme for custom CSS. Also returns the correct path
  * depending on where the function has been called from.
  *
- * @param $themelayer
+ * @param bool $themelayer
  *   (optional) Boolean determines where function has been called from.
  *
- * @return
- *    A string containing the path to the custom css or default one.
+ * @return string
+ *   A string containing the path to the custom css or default one.
  */
 function noty_messages_get_css($themelayer = FALSE) {
   if ($themelayer == TRUE) {
@@ -154,33 +154,34 @@ function noty_messages_get_css($themelayer = FALSE) {
 /**
  * Determines if a regular message should be returned or a noty message
  *
- * @param $type
+ * @param string $type
  *   Type of messages
- * @param $messages
+ * @param array $messages
  *   Array of messages
- * @return
+ *
+ * @return BOOL
  *   a BOOL deciding if noty messages should be rendered of regular ones
  */
 function noty_messages_type($type, $messages) {
-  // assume TRUE
+  // Assume TRUE.
   $is_noty = TRUE;
-  // check for lib path existence
+  // Check for lib path existence.
   if (!is_file(libraries_get_path('noty') . '/js/jquery.noty.js')) {
     return FALSE;
   }
-  // check type visibility
+  // Check type visibility.
   $active_types = variable_get('noty_messages_is_noty', _noty_messages_get_default(array($type), NOTY_IS_NOTY));
   if (empty($active_types[$type])) {
     return FALSE;
   }
-  // should the messages be shown on admin paths?
+  // Should the messages be shown on admin paths?
   if (path_is_admin(current_path())) {
     $admin_path_settings = variable_get('noty_messages_admin_path_disable', _noty_messages_get_default(array($type), NOTY_ADMIN_PATH_DISABLE));
     if (!empty($admin_path_settings[$type])) {
       return FALSE;
     }
   }
-  // if no other conditions have return FALSE by now, show type
+  // If no other conditions have return FALSE by now, show type.
   return $is_noty;
 }
 
@@ -188,10 +189,10 @@ function noty_messages_type($type, $messages) {
  * Prepare page for having noty_messages
  * Runs only if there are noty messages to be rendered
  *
- * @param $noties
+ * @param array $noties
  *   Noty messages to be rendered
  *
- * @return
+ * @return array
  *   An array with opening and closing jquery code
  */
 function noty_messages_messages_setup($noties = NULL) {
@@ -211,10 +212,11 @@ function noty_messages_messages_setup($noties = NULL) {
     drupal_add_css($custom_css);
   }
   $js_settings = array();
-  $message_types = _noty_messages_get_types(array('trimmed' => TRUE)); // maybe use $noties var here
+  // @todo maybe use $noties var here
+  $message_types = _noty_messages_get_types(array('trimmed' => TRUE));
   $config = _noty_messages_get_config_keys($message_types['trimmed'], TRUE, 'js');
   foreach ($config as $key => $value) {
-    // do some string replacement so js is nice
+    // Do some string replacement so js is nice.
     $js_settings['noty' . $key] = $value;
   }
   drupal_add_js(array('notyMessages' => $js_settings), 'setting');
@@ -222,29 +224,29 @@ function noty_messages_messages_setup($noties = NULL) {
 /**
  * Builds a set of noty messages for a type and returns it
  *
- * @param $type
+ * @param string $type
  *   type of message
- * @param $messages
+ * @param array $messages
  *   array of messages to build
  *
- * @return
- *   an array of messages, differentiated by whether they're going to noty or drupal default
+ * @return array
+ *   an array of messages
  */
 function noty_messages_build_messages($type, $messages) {
   $noties_of_type = array();
-    foreach ($messages as $key => $message) {
-      if (_noty_messages_devel_check($message)) {
-        $noties_of_type['devels'][$key] = $message;
-      }
-      else{
-        $noties_of_type['noties'][$key] = $message;
-      }
+  foreach ($messages as $key => $message) {
+    if (_noty_messages_devel_check($message)) {
+      $noties_of_type['devels'][$key] = $message;
     }
-    return $noties_of_type;
+    else {
+      $noties_of_type['noties'][$key] = $message;
+    }
+  }
+  return $noties_of_type;
 }
 
 /**
- * Decides which messages should be noties, builds them, and returns them to the theme
+ * Decides which messages should be noties and builds for theme
  */
 function noty_messages_status_messages($variables) {
   $display = $variables['display'];
@@ -263,14 +265,14 @@ function noty_messages_status_messages($variables) {
       if (!empty($noties[$type]['devels'])) {
         $devels[$type] = $noties[$type]['devels'];
       }
-      // wipe out the devels and move the array one level up
+      // Wipe out the devels and move the array one level up.
       $noties[$type] = $noties[$type]['noties'];
     }
-    else{
+    else {
       $originals[$type] = $messages;
     }
   }
-  // render noties first
+  // Render noties first.
   $noties = array_filter($noties);
   $originals = array_filter($originals);
   $devels = array_filter($devels);
@@ -300,13 +302,10 @@ function noty_messages_status_messages($variables) {
  *
  * This is the original output which we use if noty messages is turned off.
  *
- * @param $type
- *   String containing a message type. Used to set the class on the message div.
+ * @param array $vars
+ *   Array of theme variables
  *
- * @param $messages
- *   An array, each containing a message.
- *
- * @return
+ * @return string
  *   A string containing the formatted messages.
  */
 function theme_original_status_messages($vars) {
@@ -331,12 +330,12 @@ function theme_original_status_messages($vars) {
 /**
  * Helper function for building arrays to go into the variables
  *
- * @param $message_types
+ * @param array $message_types
  *   Array of message types to set the value for
- * @param $value
+ * @param mixed $value
  *   The value to set
  *
- * @return
+ * @return array
  *   a constructed array of values
  */
 function _noty_messages_get_default($message_types, $value) {
@@ -353,18 +352,18 @@ function _noty_messages_get_default($message_types, $value) {
 /**
  * Helper function to retrieve configuration keys
  *
- * @param $message_types
+ * @param array $message_types
  *   An array of message types to get configuration build for
- * @param $with_values
+ * @param bool $with_values
  *   Whether to get the values or just return an array of keys
- * @param $set
+ * @param string $set
  *   One of 'all, js, single, global'.
  *   all = All Configuration
  *   js = javascript settings
  *   single = only for message types, exclude globals
  *   global = only for global config, exclude message types
  *
- * @return
+ * @return array
  *   An array of config settings
  */
 function _noty_messages_get_config_keys($message_types = NULL, $with_values = FALSE, $set = 'all') {
@@ -385,13 +384,14 @@ function _noty_messages_get_config_keys($message_types = NULL, $with_values = FA
     $config_keys['is_noty'] = 'is_noty';
   }
   if ($with_values == FALSE) {
-    if ($set != 'js'){
-      $config_keys['admin_path_disable'] = 'admin_path_disable'; //@todo cleanup
+    if ($set != 'js') {
+      $config_keys['admin_path_disable'] = 'admin_path_disable';
+      // @todo cleanup
       $config_keys = array_flip($config_keys);
     }
     return array_values($config_keys);
   }
-  if ($set != 'js'){
+  if ($set != 'js') {
     $config_keys['admin_path_disable'] = 'admin_path_disable';
     $config_keys = array_values(array_flip($config_keys));
     foreach ($config_keys as $key => $value) {
@@ -399,30 +399,31 @@ function _noty_messages_get_config_keys($message_types = NULL, $with_values = FA
       unset($config_keys[$key]);
     }
   }
-  else{
-    foreach ($config_keys as $key => $value){
+  else {
+    foreach ($config_keys as $key => $value) {
       $config_keys[$value] = variable_get('noty_messages_' . $key, _noty_messages_get_default($message_types, constant(strtoupper('noty_' . $key))));
       unset($config_keys[$key]);
     }
-    $config_keys['MessageTypes'] = $message_types; //@todo cleanup
+    $config_keys['MessageTypes'] = $message_types;
+    // @todo cleanup
   }
   return $config_keys;
 }
 /**
  * Helper function for getting message types
  *
- * @param $options
+ * @param array $options
  *   which types to include
  *
- * @return
+ * @return array
  *   an array of types
  */
-function _noty_messages_get_types($options = array('trimmed' => TRUE, 'all' => TRUE)){
+function _noty_messages_get_types($options = array('trimmed' => TRUE, 'all' => TRUE)) {
   $types = drupal_map_assoc(array('status', 'warning', 'error'));
   if (!empty($options['trimmed'])) {
     $return['trimmed'] = $types;
   }
-  if (!empty($options['all'])){
+  if (!empty($options['all'])) {
     $return['all'] = array_merge($types, drupal_map_assoc(array('global')));
   }
   return $return;

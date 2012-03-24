@@ -1,12 +1,16 @@
 <?php
+/**
+ * @file
+ * Administration form for noty messages
+ */
 
 /**
- * @return
- *    Array of the system settings form.
+ * @return array
+ *   Array of the system settings form.
  */
 function noty_messages_admin_settings() {
   // Per message configs
-  // clear out the form first
+  // Clear out the form first.
   noty_messages_messages_setup();
   drupal_add_js(drupal_get_path('module', 'noty_messages') . '/js/noty_admin_form.js');
   $form = array();
@@ -16,7 +20,7 @@ function noty_messages_admin_settings() {
   );
   $message_types = _noty_messages_get_types();
   $defaults = _noty_messages_get_config_keys($message_types['all'], TRUE, 'global');
-  // Generate global configuration tab
+  // Generate global configuration tab.
   $default_is_noty = $defaults['is_noty'];
   unset($default_is_noty['global']);
   $lib_exists = is_file(libraries_get_path('noty') . '/js/jquery.noty.js');
@@ -31,7 +35,7 @@ function noty_messages_admin_settings() {
     $disabled = TRUE;
   }
   noty_messages_generate_settings_form($form, 'global', $defaults, $disabled);
-  // append the is_noty config
+  // Append the is_noty config.
   $form['settings']['global']['is_noty'] = array(
     '#type' => 'checkboxes',
     '#options' => $message_types['trimmed'],
@@ -41,7 +45,7 @@ function noty_messages_admin_settings() {
     '#disabled' => $disabled,
   );
 
-  // Generate fieldsets for the rest
+  // Generate fieldsets for the rest.
   $defaults = _noty_messages_get_config_keys($message_types['all'], TRUE, 'single');
   foreach ($message_types['trimmed'] as $message_type) {
     $disabled = FALSE;
@@ -66,17 +70,29 @@ function noty_messages_admin_settings() {
   );
   return $form;
 }
-
+/**
+ * Generate settings form
+ *
+ * @param array $form
+ *   The original form array
+ * @param string $message_type
+ *   The message type fieldset for which the form is being generated
+ * @param array $defaults
+ *   The default variable configuration for this message type
+ * @param bool $disabled
+ *   whether this message type is disabled
+ */
 function noty_messages_generate_settings_form(&$form, $message_type, $defaults, $disabled = FALSE) {
   $settings_key = $message_type;
-  $disabled = FALSE; // @todo hack;
+  $disabled = FALSE;
+  // @todo hack
   $form['settings'][$message_type] = array(
     '#type' => 'fieldset',
     '#title' => t('@type messages', array('@type' => ucfirst($message_type))),
     '#collapsible' => FALSE,
     '#collapsed' => FALSE,
     '#description' => t('Configuration for @type messages.', array('@type' => $message_type)),
-    //'#group' => 'settings',
+    // '#group' => 'settings',
   );
   if ($message_type != 'global') {
     $form['settings'][$message_type]['use_global'] = array(
@@ -86,7 +102,7 @@ function noty_messages_generate_settings_form(&$form, $message_type, $defaults, 
       '#default_value' => empty($defaults['use_global'][$message_type]) ? FALSE : TRUE,
     );
   }
-  // Message display
+  // Message display.
   $form['settings'][$message_type]['type'] = array(
     '#type' => 'select',
     '#title' => t('Message type'),
@@ -108,7 +124,7 @@ function noty_messages_generate_settings_form(&$form, $message_type, $defaults, 
     ),
   );
 
-  // layout of messages on the screen
+  // Layout of messages on the screen.
   $form['settings'][$message_type]['layout'] = array(
     '#type' => 'select',
     '#title' => t('Message layout'),
@@ -263,29 +279,29 @@ function noty_messages_generate_settings_form(&$form, $message_type, $defaults, 
  */
 function noty_messages_admin_settings_submit($form, &$form_state) {
   if (!form_get_errors()) {
-    // compile arrays to store in variables
+    // Compile arrays to store in variables.
     $message_types = _noty_messages_get_types();
     $values = array();
-    // pull globals out.
+    // Pull globals out.
     $single_settings = $form_state['values']['settings'];
     $single_settings = array_intersect_key($single_settings, array_flip(array_values($message_types['all'])));
     $global_settings = $single_settings['global'];
     unset($single_settings['global']);
-    // filter out unneeded configs
+    // Filter out unneeded configs.
     $config_keys = _noty_messages_get_config_keys(NULL, FALSE, 'global');
     $global_settings = array_intersect_key($global_settings, array_flip($config_keys));
-    foreach ($global_settings as $setting_name => $setting){
+    foreach ($global_settings as $setting_name => $setting) {
       $values[$setting_name] = _noty_messages_get_default($message_types['all'], $setting);
     }
-    foreach ($single_settings as $message_type => $settings){
+    foreach ($single_settings as $message_type => $settings) {
       $config_keys = _noty_messages_get_config_keys(NULL, FALSE, 'single');
       $settings = array_intersect_key($settings, array_flip($config_keys));
-      // always set use global parameter
+      // Always set use global parameter.
       $values['use_global'][$message_type] = $settings['use_global'];
-      // check to make sure that it's not set to use globals and that it is a noty message type
-      if ((bool)$settings['use_global'] != TRUE && (bool)$values['is_noty'][$message_type] != FALSE){
-        // get the settings in
-        foreach($settings as $setting_name => $setting){
+      // Check to make sure not set to use globals and that it's a noty type.
+      if ((bool) $settings['use_global'] != TRUE && (bool) $values['is_noty'][$message_type] != FALSE) {
+        // Get the settings in.
+        foreach ($settings as $setting_name => $setting) {
           $values[$setting_name][$message_type] = $setting;
         }
       }
@@ -296,8 +312,15 @@ function noty_messages_admin_settings_submit($form, &$form_state) {
     drupal_set_message(t('The configuration has been saved.'));
   }
 }
-
-function noty_messages_settings_reset($form, &$form_state){
+/**
+ * Callback function for settings reset
+ *
+ * @param array $form
+ *   The admin form array
+ * @param array $form_state
+ *   The values inside the form
+ */
+function noty_messages_settings_reset($form, &$form_state) {
   $message_types = _noty_messages_get_types();
   $defaults = _noty_messages_get_config_keys($message_types['all'], FALSE, 'all');
   foreach ($defaults as $key => $value) {

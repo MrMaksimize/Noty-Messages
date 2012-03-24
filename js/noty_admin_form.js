@@ -28,17 +28,6 @@
         }
         return false;
       });
-      /*$('input[id$="use-global"]', context).click(function(event){
-        // split up the id to get the message name
-        var name = $(this).attr('id').split('-');
-        name = name[2];
-        if ($(this).is(':checked')){
-          console.log(name);
-        }
-        else{
-          console.log('unchecked');
-        }
-      });*/
     }
   }
 })(jQuery);

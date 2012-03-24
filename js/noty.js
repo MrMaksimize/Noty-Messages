@@ -22,7 +22,6 @@ var notyMessages = notyMessages || {};
       closeOnSelfClick: config.notyClickClose[typeName],
       modal: config.notyModal[typeName]
     }
-    console.log(notySettings);
     if (!(typeData instanceof Array)){
       typeData = new Array(typeData);
     }
