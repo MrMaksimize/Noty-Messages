@@ -189,13 +189,10 @@ function noty_messages_type($type, $messages) {
  * Prepare page for having noty_messages
  * Runs only if there are noty messages to be rendered
  *
- * @param array $noties
- *   Noty messages to be rendered
- *
  * @return array
  *   An array with opening and closing jquery code
  */
-function noty_messages_messages_setup($noties = NULL) {
+function noty_messages_messages_setup() {
   $options = array(
     'type' => 'file',
     'scope' => 'header',
@@ -212,7 +209,6 @@ function noty_messages_messages_setup($noties = NULL) {
     drupal_add_css($custom_css);
   }
   $js_settings = array();
-  // @todo maybe use $noties var here
   $message_types = _noty_messages_get_types(array('trimmed' => TRUE));
   $config = _noty_messages_get_config_keys($message_types['trimmed'], TRUE, 'js');
   foreach ($config as $key => $value) {
@@ -377,6 +373,9 @@ function _noty_messages_get_config_keys($message_types = NULL, $with_values = FA
     'modal' => 'Modal',
     'type' => 'Type',
   );
+  if ($set != 'js') {
+    $config_keys['admin_path_disable'] = 'admin_path_disable';
+  }
   if ($set == 'single' || $set == 'all') {
     $config_keys['use_global'] = 'use_global';
   }
@@ -385,14 +384,12 @@ function _noty_messages_get_config_keys($message_types = NULL, $with_values = FA
   }
   if ($with_values == FALSE) {
     if ($set != 'js') {
-      $config_keys['admin_path_disable'] = 'admin_path_disable';
       // @todo cleanup
       $config_keys = array_flip($config_keys);
     }
     return array_values($config_keys);
   }
   if ($set != 'js') {
-    $config_keys['admin_path_disable'] = 'admin_path_disable';
     $config_keys = array_values(array_flip($config_keys));
     foreach ($config_keys as $key => $value) {
       $config_keys[$value] = variable_get('noty_messages_' . $value, _noty_messages_get_default($message_types, constant(strtoupper('noty_' . $value))));
