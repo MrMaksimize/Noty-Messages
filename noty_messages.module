@@ -274,9 +274,6 @@ function noty_messages_status_messages($variables) {
   $devels = array_filter($devels);
   if (!empty($noties)) {
     $jq_inline = noty_messages_messages_setup($noties);
-    /*foreach ($noties as $type => $messages){
-      $noties[$type] = drupal_map_assoc($messages);
-    }*/
     drupal_add_js(array('notyMessagesNoties' => $noties), array('type' => 'setting', 'cache' => FALSE));
   }
   if (!empty($originals)) {
