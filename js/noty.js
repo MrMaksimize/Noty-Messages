@@ -20,7 +20,8 @@ var notyMessages = notyMessages || {};
       timeout: config.notyTimeout[typeName],
       closable: config.notyClosable[typeName],
       closeOnSelfClick: config.notyClickClose[typeName],
-      modal: config.notyModal[typeName]
+      modal: config.notyModal[typeName],
+      theme: 'noty_theme_mitgux'
     }
     if (!(typeData instanceof Array)){
       typeData = new Array(typeData);

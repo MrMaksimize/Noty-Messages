@@ -18,8 +18,8 @@ function noty_messages_admin_settings() {
     '#type' => 'vertical_tabs',
     '#tree' => TRUE,
   );
-  $message_types = _noty_messages_get_types();
-  $defaults = _noty_messages_get_config_keys($message_types['all'], TRUE, 'global');
+  $message_types = _noty_messages_get_types(TRUE);
+  $defaults = _noty_messages_get_config_keys($message_types, TRUE, 'global');
   // Generate global configuration tab.
   $default_is_noty = $defaults['is_noty'];
   unset($default_is_noty['global']);
@@ -28,7 +28,7 @@ function noty_messages_admin_settings() {
   if (!$lib_exists) {
     $form['code_status'] = array(
       '#type' => 'fieldset',
-      '#title' => t('Purr Messages settings'),
+      '#title' => t('Noty Settings'),
       '#weight' => '-10',
       '#description' => t('Please download the noty library from https://github.com/needim/noty and place it in the libraries/noty directory. So that jquery.noty.js file is located in libraries/noty/js/jquery.noty.js'),
     );
@@ -43,6 +43,28 @@ function noty_messages_admin_settings() {
     '#default_value' => $defaults['is_noty'],
     '#weight' => '-5',
     '#disabled' => $disabled,
+  );
+
+  //Append overall theme config
+  $form['settings']['global']['theme'] = array(
+    '#type' => 'select',
+    '#title' => t('Theme'),
+    '#options' => array(
+      'default' => t('default'),
+      'mitgux' => t('mitgux'),
+      'custom' => t('custom'),
+    ),
+    '#description' => t('Theme to use for these messages'),
+    //'#default_value' => $defaults['type'][$message_type],
+    //'#disabled' => $disabled,
+    '#states' => array(
+      'invisible' => array(
+        'input[name="settings[' . $message_type . '][use_global]"]' => array('checked' => TRUE),
+      ),
+      'disabled' => array(
+        'input[name="settings[' . $message_type . '][use_global]"]' => array('checked' => TRUE),
+      ),
+    ),
   );
 
   // Generate fieldsets for the rest.
@@ -111,7 +133,7 @@ function noty_messages_generate_settings_form(&$form, $message_type, $defaults, 
       'error' => t('Error'),
       'success' => t('Success'),
     ),
-    '#description' => t('How To Theme or smth like that'),
+    '#description' => t('Message Display Type'),
     '#default_value' => $defaults['type'][$message_type],
     '#disabled' => $disabled,
     '#states' => array(
@@ -280,18 +302,18 @@ function noty_messages_generate_settings_form(&$form, $message_type, $defaults, 
 function noty_messages_admin_settings_submit($form, &$form_state) {
   if (!form_get_errors()) {
     // Compile arrays to store in variables.
-    $message_types = _noty_messages_get_types();
+    $message_types = _noty_messages_get_types(TRUE);
     $values = array();
     // Pull globals out.
     $single_settings = $form_state['values']['settings'];
-    $single_settings = array_intersect_key($single_settings, array_flip(array_values($message_types['all'])));
+    $single_settings = array_intersect_key($single_settings, array_flip(array_values($message_types)));
     $global_settings = $single_settings['global'];
     unset($single_settings['global']);
     // Filter out unneeded configs.
     $config_keys = _noty_messages_get_config_keys(NULL, FALSE, 'global');
     $global_settings = array_intersect_key($global_settings, array_flip($config_keys));
     foreach ($global_settings as $setting_name => $setting) {
-      $values[$setting_name] = _noty_messages_get_default($message_types['all'], $setting);
+      $values[$setting_name] = _noty_messages_get_default($message_types, $setting);
     }
     foreach ($single_settings as $message_type => $settings) {
       $config_keys = _noty_messages_get_config_keys(NULL, FALSE, 'single');
@@ -322,7 +344,7 @@ function noty_messages_admin_settings_submit($form, &$form_state) {
  */
 function noty_messages_settings_reset($form, &$form_state) {
   $message_types = _noty_messages_get_types();
-  $defaults = _noty_messages_get_config_keys($message_types['all'], FALSE, 'all');
+  $defaults = _noty_messages_get_config_keys($message_types, FALSE, 'all');
   foreach ($defaults as $key => $value) {
     variable_del('noty_messages_' . $value);
   }
