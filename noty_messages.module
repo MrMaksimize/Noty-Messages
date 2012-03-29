@@ -212,7 +212,7 @@ function noty_messages_messages_setup() {
   }
   $js_settings = array();
   $message_types = _noty_messages_get_types();
-  $config = _noty_messages_get_config_keys($message_types, TRUE, 'js');
+  $config = _noty_messages_get_config('js', TRUE, $message_types);
   foreach ($config as $key => $value) {
     // Do some string replacement so js is nice.
     $js_settings['noty' . $key] = $value;
@@ -361,7 +361,8 @@ function _noty_messages_get_default($message_types, $value) {
  * @return array
  *   An array of config settings
  */
-function _noty_messages_get_config_keys($message_types = NULL, $with_values = FALSE, $set = 'all') {
+//function _noty_messages_get_config_keys($message_types = NULL, $with_values = FALSE, $set = 'all') {
+function _noty_messages_get_config($set = 'all', $with_values = FALSE, $message_types = NULL) {
   $config_keys = array(
     'layout' => 'Layout',
     'text_align' => 'TextAlign',

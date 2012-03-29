@@ -13,7 +13,7 @@ function noty_messages_enable() {
  * Implements hook_uninstall
  */
 function noty_messages_uninstall() {
-  $config_keys = _noty_messages_get_config_keys(NULL, FALSE, 'all');
+  $config_keys = _noty_messages_get_config();
   foreach ($config_keys as $key) {
     variable_del('noty_messages_' . $key);
   }
