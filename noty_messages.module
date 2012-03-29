@@ -9,7 +9,7 @@
 /**
  * Define Default Values
  */
-// Passed to JS
+// Passed to JS.
 define('NOTY_LAYOUT', 'topRight');
 define('NOTY_TEXT_ALIGN', 'left');
 define('NOTY_SPEED', 500);
@@ -20,7 +20,7 @@ define('NOTY_MODAL', FALSE);
 define('NOTY_TYPE', 'success');
 define('NOTY_THEME', 'noty_theme_default');
 
-// Config
+// Config.
 define('NOTY_ADMIN_PATH_DISABLE', FALSE);
 define('NOTY_IS_NOTY', FALSE);
 define('NOTY_USE_GLOBAL', TRUE);
@@ -153,11 +153,11 @@ function noty_messages_type($type, $messages) {
  *   A string containing the path to the custom css or default one.
  */
 function noty_messages_get_custom_css($themelayer = FALSE, $theme = NULL) {
-  if (empty($theme)){
-    // We're looking for core noty css additions
+  if (empty($theme)) {
+    // We're looking for core noty css additions.
     $file = 'noty.css';
   }
-  else{
+  else {
     $file = $theme . '.css';
   }
   if ($themelayer == TRUE) {
@@ -198,7 +198,7 @@ function noty_messages_messages_setup($admin = FALSE) {
   }
 
   // If this is not being called from admin, normal behavior.
-  if (empty($admin)){
+  if (empty($admin)) {
     $theme = variable_get('noty_messages_theme', _noty_messages_get_default('global', NOTY_THEME));
     // Only care about global for now. May change in the future.
     $theme = $theme['global'];
@@ -208,13 +208,13 @@ function noty_messages_messages_setup($admin = FALSE) {
       drupal_add_css($theme_css);
     }
     else {
-      // fall back to default css
+      // Fall back to default css.
       drupal_add_css($lib_path . '/css/' . $theme . '.css');
     }
   }
   // If this is coming from admin, load all css files.
-  // @todo should probably have some kind of hooking here or a get all themes function.
-  else{
+  // @todo should have some kind of hooking here or a get all themes function.
+  else {
     $themes = array(
       'noty_theme_default',
       'noty_theme_custom',
@@ -222,10 +222,10 @@ function noty_messages_messages_setup($admin = FALSE) {
     );
     foreach ($themes as $theme) {
       $theme_css = noty_messages_get_custom_css(TRUE, $theme);
-      if (empty($theme_css) && $theme != 'noty_theme_custom'){
+      if (empty($theme_css) && $theme != 'noty_theme_custom') {
         drupal_add_css($lib_path . '/css/' . $theme . '.css');
       }
-      else{
+      else {
         drupal_add_css($theme_css);
       }
     }
@@ -358,7 +358,7 @@ function _noty_messages_get_default($message_types, $value) {
   if (is_array($value)) {
     return $value;
   }
-  if (!is_array($message_types)){
+  if (!is_array($message_types)) {
     $message_types = array($message_types);
   }
   foreach ($message_types as $message_type) {
@@ -370,16 +370,16 @@ function _noty_messages_get_default($message_types, $value) {
 /**
  * Helper function to retrieve configuration keys
  *
- * @param array $message_types
- *   An array of message types to get configuration build for
- * @param bool $with_values
- *   Whether to get the values or just return an array of keys
  * @param string $set
  *   One of 'all, js, single, global'.
  *   all = All Configuration
  *   js = javascript settings
  *   single = only for message types, exclude globals
  *   global = only for global config, exclude message types
+ * @param bool $with_values
+ *   Whether to get the values or just return an array of keys
+ * @param array $message_types
+ *   An array of message types to get configuration build for
  *
  * @return array
  *   An array of config settings
@@ -432,15 +432,12 @@ function _noty_messages_get_config($set = 'all', $with_values = FALSE, $message_
 /**
  * Helper function for getting message types
  *
- * @param array $options
- *   which types to include
- *
- * @return array
- *   an array of types
+ *  @param bool $include_globals
+ *   Whether globals should be included
  */
 function _noty_messages_get_types($include_globals = FALSE) {
   $types = drupal_map_assoc(array('status', 'warning', 'error'));
-  if ($include_globals == TRUE){
+  if ($include_globals == TRUE) {
     $types = array_merge($types, drupal_map_assoc(array('global')));
   }
   return $types;

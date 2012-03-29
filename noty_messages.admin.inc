@@ -303,7 +303,7 @@ function noty_messages_admin_settings_submit($form, &$form_state) {
     // Filter out unneeded configs.
     $config_keys = _noty_messages_get_config('global');
     $global_settings = array_intersect_key($global_settings, array_flip($config_keys));
-    // set globals first
+    // Set globals first.
     foreach ($global_settings as $setting_name => $setting) {
       $values[$setting_name] = _noty_messages_get_default($message_types, $setting);
     }
