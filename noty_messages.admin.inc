@@ -53,7 +53,7 @@ function noty_messages_admin_settings() {
       'noty_theme_mitgux' => t('Mitgux'),
       'noty_theme_custom' => t('Custom'),
     ),
-    '#description' => t('Theme to use for these messages'),
+    '#description' => t('Theme to use for these messages. Create a file called noty_theme_custom.css in your theme/notycss directory to use custom'),
     '#weight' => '-4',
     '#default_value' => $defaults['theme']['global'],
   );
@@ -303,6 +303,7 @@ function noty_messages_admin_settings_submit($form, &$form_state) {
     // Filter out unneeded configs.
     $config_keys = _noty_messages_get_config('global');
     $global_settings = array_intersect_key($global_settings, array_flip($config_keys));
+    // set globals first
     foreach ($global_settings as $setting_name => $setting) {
       $values[$setting_name] = _noty_messages_get_default($message_types, $setting);
     }
