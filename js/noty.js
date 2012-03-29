@@ -21,7 +21,7 @@ var notyMessages = notyMessages || {};
       closable: config.notyClosable[typeName],
       closeOnSelfClick: config.notyClickClose[typeName],
       modal: config.notyModal[typeName],
-      theme: 'noty_theme_mitgux'
+      theme: config.notyTheme[typeName]
     }
     if (!(typeData instanceof Array)){
       typeData = new Array(typeData);

@@ -18,7 +18,7 @@ define('NOTY_CLOSABLE', TRUE);
 define('NOTY_CLICK_CLOSE', TRUE);
 define('NOTY_MODAL', FALSE);
 define('NOTY_TYPE', 'success');
-define('NOTY_THEME', 'noty_theme_mitgux');
+define('NOTY_THEME', 'mitgux');
 
 // Config
 define('NOTY_ADMIN_PATH_DISABLE', FALSE);
@@ -173,15 +173,22 @@ function noty_messages_type($type, $messages) {
  * @return string
  *   A string containing the path to the custom css or default one.
  */
-function noty_messages_get_css($themelayer = FALSE) {
+function noty_messages_get_css($themelayer = FALSE, $theme = NULL) {
+  if (empty($theme)){
+    // We're looking for core noty css additions
+    $file = 'noty.css';
+  }
+  else{
+    $file = $theme . '.css';
+  }
   if ($themelayer == TRUE) {
     // Called from theme function so path_to_theme returns incorrect result.
     global $theme;
-    $custom_css = drupal_get_path('theme', $theme) . '/notycss/noty.css';
+    $custom_css = drupal_get_path('theme', $theme) . '/notycss/' . $file;
   }
   else {
     // Called from non theme function (admin).
-    $custom_css = path_to_theme() . '/notycss/noty.css';
+    $custom_css = path_to_theme() . '/notycss/' . $file;
   }
   if (!is_file($custom_css)) {
     return FALSE;
@@ -194,6 +201,7 @@ function noty_messages_get_css($themelayer = FALSE) {
  * Runs only if there are noty messages to be rendered
  */
 function noty_messages_messages_setup() {
+  // @todo probably preload all files in admin?
   $options = array(
     'type' => 'file',
     'scope' => 'header',
@@ -205,10 +213,21 @@ function noty_messages_messages_setup() {
   drupal_add_js($lib_path . '/js/jquery.noty.js', $options);
   drupal_add_js($module_path . '/js/noty.js', $options);
   drupal_add_css($lib_path . '/css/jquery.noty.css');
-  drupal_add_css($lib_path . '/css/noty_theme_mitgux.css');
   $custom_css = noty_messages_get_css($themelayer = TRUE);
   if (!empty($custom_css)) {
     drupal_add_css($custom_css);
+  }
+  // Add custom css.
+  $theme = variable_get('noty_messages_theme', _noty_messages_get_default('global', NOTY_THEME));
+  // Only care about global for now. May change in the future.
+  $theme = $theme['global'];
+  $theme_css = noty_messages_get_css(TRUE, $theme);
+  if (!empty($theme_css)) {
+    drupal_add_css($theme_css);
+  }
+  else {
+    // fall back to default css
+    drupal_add_css($lib_path . '/css/' . $theme . '.css');
   }
   $js_settings = array();
   $message_types = _noty_messages_get_types();
@@ -338,6 +357,9 @@ function _noty_messages_get_default($message_types, $value) {
   if (is_array($value)) {
     return $value;
   }
+  if (!is_array($message_types)){
+    $message_types = array($message_types);
+  }
   foreach ($message_types as $message_type) {
     $return[$message_type] = $value;
   }
@@ -361,7 +383,6 @@ function _noty_messages_get_default($message_types, $value) {
  * @return array
  *   An array of config settings
  */
-//function _noty_messages_get_config_keys($message_types = NULL, $with_values = FALSE, $set = 'all') {
 function _noty_messages_get_config($set = 'all', $with_values = FALSE, $message_types = NULL) {
   $config_keys = array(
     'layout' => 'Layout',
@@ -372,7 +393,7 @@ function _noty_messages_get_config($set = 'all', $with_values = FALSE, $message_
     'click_close' => 'ClickClose',
     'modal' => 'Modal',
     'type' => 'Type',
-    'theme' => 'theme',
+    'theme' => 'Theme',
   );
   if ($set == 'single' || $set == 'all') {
     $config_keys['use_global'] = 'use_global';

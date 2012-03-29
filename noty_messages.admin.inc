@@ -35,40 +35,30 @@ function noty_messages_admin_settings() {
     $disabled = TRUE;
   }
   noty_messages_generate_settings_form($form, 'global', $defaults, $disabled);
+  unset ($message_types['global']);
   // Append the is_noty config.
   $form['settings']['global']['is_noty'] = array(
     '#type' => 'checkboxes',
-    '#options' => $message_types['trimmed'],
+    '#options' => $message_types,
     '#title' => t('Messages to display in noty format'),
     '#default_value' => $defaults['is_noty'],
     '#weight' => '-5',
     '#disabled' => $disabled,
   );
-
-  //Append overall theme config
   $form['settings']['global']['theme'] = array(
     '#type' => 'select',
     '#title' => t('Theme'),
     '#options' => array(
-      'default' => t('default'),
-      'mitgux' => t('mitgux'),
-      'custom' => t('custom'),
+      'noty_theme_default' => t('Default'),
+      'noty_theme_mitgux' => t('Mitgux'),
+      'noty_theme_custom' => t('Custom'),
     ),
     '#description' => t('Theme to use for these messages'),
-    //'#default_value' => $defaults['type'][$message_type],
-    //'#disabled' => $disabled,
-    '#states' => array(
-      'invisible' => array(
-        'input[name="settings[' . $message_type . '][use_global]"]' => array('checked' => TRUE),
-      ),
-      'disabled' => array(
-        'input[name="settings[' . $message_type . '][use_global]"]' => array('checked' => TRUE),
-      ),
-    ),
+    '#weight' => '-4',
+    '#default_value' => $defaults['theme']['global'],
   );
 
   // Generate fieldsets for the rest.
-  unset ($message_types['global']);
   $defaults = _noty_messages_get_config('single', TRUE, $message_types);
   foreach ($message_types as $message_type) {
     $disabled = FALSE;
@@ -316,7 +306,7 @@ function noty_messages_admin_settings_submit($form, &$form_state) {
     foreach ($global_settings as $setting_name => $setting) {
       $values[$setting_name] = _noty_messages_get_default($message_types, $setting);
     }
-    $config_keys = _noty_messages_get_config_keys('single');
+    $config_keys = _noty_messages_get_config('single');
     foreach ($single_settings as $message_type => $settings) {
       $settings = array_intersect_key($settings, array_flip($config_keys));
       // Always set use global parameter.
