@@ -19,7 +19,7 @@
           notySettings.notyClosable[name] = $('#edit-settings-' + name + '-closable').is(':checked');
           notySettings.notyClickClose[name] = $('#edit-settings-' + name + '-click-close').is(':checked');
           notySettings.notyModal[name] = $('#edit-settings-' + name + '-modal').is(':checked');
-          notySettings.notyTheme[name] = $('#edit-settings-global-theme:selected').val();
+          notySettings.notyTheme[name] = $('#edit-settings-global-theme :selected').val();
           testMessages = new Array('This is a ' + name + ' message', 'And this is another one!');
           new notyMessages.renderType(name, testMessages, notySettings);
         }

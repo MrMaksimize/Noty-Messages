@@ -200,7 +200,7 @@ function noty_messages_get_custom_css($themelayer = FALSE, $theme = NULL) {
  * Prepare page for having noty_messages
  * Runs only if there are noty messages to be rendered
  */
-function noty_messages_messages_setup() {
+function noty_messages_messages_setup($admin = FALSE) {
   // @todo probably preload all files in admin?
   $options = array(
     'type' => 'file',
@@ -217,17 +217,39 @@ function noty_messages_messages_setup() {
   if (!empty($custom_css)) {
     drupal_add_css($custom_css);
   }
-  // Add custom css.
-  $theme = variable_get('noty_messages_theme', _noty_messages_get_default('global', NOTY_THEME));
-  // Only care about global for now. May change in the future.
-  $theme = $theme['global'];
-  $theme_css = noty_messages_get_custom_css(TRUE, $theme);
-  if (!empty($theme_css)) {
-    drupal_add_css($theme_css);
+
+  // If this is not being called from admin, normal behavior.
+  if (empty($admin)){
+    $theme = variable_get('noty_messages_theme', _noty_messages_get_default('global', NOTY_THEME));
+    // Only care about global for now. May change in the future.
+    $theme = $theme['global'];
+    // Add custom css.
+    $theme_css = noty_messages_get_custom_css(TRUE, $theme);
+    if (!empty($theme_css)) {
+      drupal_add_css($theme_css);
+    }
+    else {
+      // fall back to default css
+      drupal_add_css($lib_path . '/css/' . $theme . '.css');
+    }
   }
-  else {
-    // fall back to default css
-    drupal_add_css($lib_path . '/css/' . $theme . '.css');
+  // If this is coming from admin, load all css files.
+  // @todo should probably have some kind of hooking here or a get all themes function.
+  else{
+    $themes = array(
+      'noty_theme_default',
+      'noty_theme_custom',
+      'noty_theme_mitgux',
+    );
+    foreach ($themes as $theme) {
+      $theme_css = noty_messages_get_custom_css(TRUE, $theme);
+      if (empty($theme_css) && $theme != 'noty_theme_custom'){
+        drupal_add_css($lib_path . '/css/' . $theme . '.css');
+      }
+      else{
+        drupal_add_css($theme_css);
+      }
+    }
   }
   $js_settings = array();
   $message_types = _noty_messages_get_types();

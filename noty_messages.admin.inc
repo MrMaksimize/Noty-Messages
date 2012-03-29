@@ -11,7 +11,7 @@
 function noty_messages_admin_settings() {
   // Per message configs
   // Clear out the form first.
-  noty_messages_messages_setup();
+  noty_messages_messages_setup($admin = TRUE);
   drupal_add_js(drupal_get_path('module', 'noty_messages') . '/js/noty_admin_form.js');
   $form = array();
   $form['settings'] = array(
