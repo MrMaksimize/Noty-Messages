@@ -68,8 +68,9 @@ function noty_messages_admin_settings() {
   );
 
   // Generate fieldsets for the rest.
+  unset ($message_types['global']);
   $defaults = _noty_messages_get_config('single', TRUE, $message_types);
-  foreach ($message_types['trimmed'] as $message_type) {
+  foreach ($message_types as $message_type) {
     $disabled = FALSE;
     if (!empty($defaults['use_global'][$message_type]) || empty($default_is_noty[$message_type]) || !$lib_exists) {
       $disabled = TRUE;
@@ -315,8 +316,8 @@ function noty_messages_admin_settings_submit($form, &$form_state) {
     foreach ($global_settings as $setting_name => $setting) {
       $values[$setting_name] = _noty_messages_get_default($message_types, $setting);
     }
+    $config_keys = _noty_messages_get_config_keys('single');
     foreach ($single_settings as $message_type => $settings) {
-      $config_keys = _noty_messages_get_config_keys('single');
       $settings = array_intersect_key($settings, array_flip($config_keys));
       // Always set use global parameter.
       $values['use_global'][$message_type] = $settings['use_global'];
