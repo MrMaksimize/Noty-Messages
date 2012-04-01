@@ -101,7 +101,7 @@ function noty_messages_generate_settings_form(&$form, $message_type, $defaults, 
   $disabled = FALSE;
   $form['settings'][$message_type] = array(
     '#type' => 'fieldset',
-    '#title' => t('@type messages', array('@type' => ucfirst($message_type))),
+    '#title' => t('@type messages', array('@type' => drupal_ucfirst($message_type))),
     '#collapsible' => FALSE,
     '#collapsed' => FALSE,
     '#description' => t('Configuration for @type messages.', array('@type' => $message_type)),
