@@ -55,7 +55,7 @@ function noty_messages_help($path, $arg) {
 function noty_messages_menu() {
   $items = array();
   $items['admin/config/user-interface/noty-messages'] = array(
-    'title' => 'Configure noty Messages',
+    'title' => 'Noty Messages',
     'description' => 'Settings to control noty messages',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('noty_messages_admin_settings'),
