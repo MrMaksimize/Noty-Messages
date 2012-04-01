@@ -23,3 +23,29 @@ function noty_messages_uninstall() {
     variable_del('noty_messages_' . $key);
   }
 }
+
+/**
+ * Implements hook_requirements().
+ */
+function noty_messages_requirements($phase) {
+  $requirements = array();
+  if ($phase == 'runtime') {
+    $t = get_t();
+    // Check for the Stripe PHP library.
+    if (file_exists(libraries_get_path('noty') . '/js/jquery.noty.js')) {
+      $requirements['noty_messages_js'] = array(
+        'value' => $t('Installed'),
+        'severity' => REQUIREMENT_OK,
+      );
+    }
+    else {
+      $requirements['noty_messages_js'] = array(
+        'value' => $t('Missing!'),
+        'severity' => REQUIREMENT_ERROR,
+        'description' => $t('Noty library missing. Download the Noty library from <a href="@url">http://needim.github.com/noty/</a> and place in in to sites/all/libraries/noty', array('@url' => 'http://needim.github.com/noty/')),
+      );
+    }
+    $requirements['commerce_stripe_php']['title'] = $t('Stripe PHP library');
+    return $requirements;
+  
+}
