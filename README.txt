@@ -10,21 +10,25 @@ Download the module and untar into your site's modules directory.
 
 Go to admin/modules/list and enable the module.
 
-Go to admin/config/user-interface/noty-messages and enable the message types you would like to be
+Go to admin/config/user-interface/noty-messages and enable the message types you
+would like to be
 taken over by noty.
 ------------------------------------------------------
 Usage:
 
-Once you have enabled the message types, they will be taken over by noty rendering.
+Once you have enabled the message types, they will be taken over by noty
+rendering.
 
 You can decide to disable the display of noty style messages on admin pages.
 ------------------------------------------------------
 Customization:
 
-There are several built in themes inside the noty library.  You can use those or you can override them
+There are several built in themes inside the noty library.  You can use those or
+you can override them
 by putting files with the same names into your theme/notycss/ directory.
 
-If you choose custom, you have to make a file in that directory called noty_theme_custom.css and copy
+If you choose custom, you have to make a file in that directory called
+noty_theme_custom.css and copy
 one of the original theme files over and work on it.
 
 In admin, all themes are getting loaded for preview.
@@ -41,4 +45,5 @@ Roadmap:
 
 ------------------------------------------------------
 
-This module was written by MrMaksimize. It uses code from https://github.com/needim/noty
+This module was written by MrMaksimize.
+It uses code from https://github.com/needim/noty
