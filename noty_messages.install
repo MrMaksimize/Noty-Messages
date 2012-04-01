@@ -9,7 +9,8 @@
  */
 function noty_messages_enable() {
   if (!is_file(libraries_get_path('noty') . '/js/jquery.noty.js')) {
-    drupal_set_message(t('Please install noty library'), $type = 'warning');
+    $t = get_t();
+    drupal_set_message($t('Please install noty library'), $type = 'warning');
   }
 }
 
@@ -47,5 +48,5 @@ function noty_messages_requirements($phase) {
     }
     $requirements['noty_messages_js']['title'] = $t('Noty.js library');
     return $requirements;
-  
+  }
 }
