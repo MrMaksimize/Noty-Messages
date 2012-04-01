@@ -52,6 +52,7 @@ function noty_messages_admin_settings() {
     '#options' => array(
       'noty_theme_default' => t('Default'),
       'noty_theme_mitgux' => t('Mitgux'),
+      'noty_theme_twitter' => t('Twitter Bootstrap'),
       'noty_theme_custom' => t('Custom'),
     ),
     '#description' => t('Theme to use for these messages. Create a file called noty_theme_custom.css in your theme/notycss directory to use custom'),
