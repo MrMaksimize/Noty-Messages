@@ -26,27 +26,6 @@ define('NOTY_IS_NOTY', FALSE);
 define('NOTY_USE_GLOBAL', TRUE);
 
 /**
- * Implements hooks_requirements().
- */
-function noty_messages_requirements($phase) {
-  $requirements = array();
-  $t = get_t();
-  $requirements['noty_messages'] = array(
-    'title' => $t('Noty Library'),
-  );
-  if (is_file(libraries_get_path('noty') . '/js/jquery.noty.js')) {
-    $requirements['noty_messages']['value'] = $t('Installed');
-    $requirements['noty_messages']['severity'] = REQUIREMENT_OK;
-  }
-  else {
-    $requirements['noty_messages']['value'] = $t('Not Installed');
-    $requirements['noty_messages']['severity'] = REQUIREMENT_ERROR;
-    $requirements['noty_messages']['description'] = $t('Please install the noty library %url.', array('%url' => 'https://github.com/needim/noty'));
-  }
-  return $requirements;
-}
-
-/**
  * Implements hook_permission().
  */
 function noty_messages_permission() {
