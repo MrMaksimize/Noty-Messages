@@ -1,16 +1,20 @@
 <?php
+/**
+ * @file
+ * Administration form for noty messages
+ */
 
 /**
- * Implements hook_enable
+ * Implements hook_enable().
  */
 function noty_messages_enable() {
-  if (!is_file(libraries_get_path('noty') . '/js/jquery.noty.js')){
-    drupal_set_message(t('Please install noty library.'), $type = 'warning');
+  if (!is_file(libraries_get_path('noty') . '/js/jquery.noty.js')) {
+    drupal_set_message(t('Please install noty library'), $type = 'warning');
   }
 }
 
 /**
- * Implements hook_uninstall
+ * Implements hook_uninstall().
  */
 function noty_messages_uninstall() {
   module_load_include('module', 'noty_messages', 'noty_messages');

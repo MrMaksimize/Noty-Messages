@@ -176,8 +176,7 @@ function noty_messages_get_custom_css($themelayer = FALSE, $theme = NULL) {
 }
 
 /**
- * Prepare page for having noty_messages
- * Runs only if there are noty messages to be rendered
+ * Prepare page for noty_messages, only there are noty_messages to be rendered.
  */
 function noty_messages_messages_setup($admin = FALSE) {
   // @todo probably preload all files in admin?

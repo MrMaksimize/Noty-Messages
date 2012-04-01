@@ -24,7 +24,7 @@
           new notyMessages.renderType(name, testMessages, notySettings);
         }
         else{
-          alert('This is not a noty message');
+          alert(Drupal.t('This is not a noty message'));
         }
         return false;
       });

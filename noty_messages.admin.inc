@@ -28,14 +28,14 @@ function noty_messages_admin_settings() {
   if (!$lib_exists) {
     $form['code_status'] = array(
       '#type' => 'fieldset',
-      '#title' => t('Noty Settings'),
+      '#title' => t('Noty settings'),
       '#weight' => '-10',
       '#description' => t('Please download the noty library from https://github.com/needim/noty and place it in the libraries/noty directory. So that jquery.noty.js file is located in libraries/noty/js/jquery.noty.js'),
     );
     $disabled = TRUE;
   }
   noty_messages_generate_settings_form($form, 'global', $defaults, $disabled);
-  unset ($message_types['global']);
+  unset($message_types['global']);
   // Append the is_noty config.
   $form['settings']['global']['is_noty'] = array(
     '#type' => 'checkboxes',
@@ -77,7 +77,7 @@ function noty_messages_admin_settings() {
     ),
     'reset' => array(
       '#type' => 'submit',
-      '#value' => t('Reset All Settings'),
+      '#value' => t('Reset all settings'),
       '#submit' => array('noty_messages_settings_reset'),
     ),
   );
@@ -124,7 +124,7 @@ function noty_messages_generate_settings_form(&$form, $message_type, $defaults, 
       'error' => t('Error'),
       'success' => t('Success'),
     ),
-    '#description' => t('Message Display Type'),
+    '#description' => t('Message display type'),
     '#default_value' => $defaults['type'][$message_type],
     '#disabled' => $disabled,
     '#states' => array(
