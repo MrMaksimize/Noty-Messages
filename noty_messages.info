@@ -2,7 +2,6 @@ name = "Noty Messages"
 description = "A Noty based override of Drupal's core message system"
 core = 7.x
 php = 5.1
-version = 7.x-1.x
 dependencies[] = ctools
 dependencies[] = libraries
 dependencies[] = jquery_update

@@ -98,14 +98,12 @@ function noty_messages_admin_settings() {
 function noty_messages_generate_settings_form(&$form, $message_type, $defaults, $disabled = FALSE) {
   $settings_key = $message_type;
   $disabled = FALSE;
-  // @todo hack
   $form['settings'][$message_type] = array(
     '#type' => 'fieldset',
     '#title' => t('@type messages', array('@type' => ucfirst($message_type))),
     '#collapsible' => FALSE,
     '#collapsed' => FALSE,
     '#description' => t('Configuration for @type messages.', array('@type' => $message_type)),
-    // '#group' => 'settings',
   );
   if ($message_type != 'global') {
     $form['settings'][$message_type]['use_global'] = array(

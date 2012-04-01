@@ -406,7 +406,6 @@ function _noty_messages_get_config($set = 'all', $with_values = FALSE, $message_
   }
   if ($with_values == FALSE) {
     if ($set != 'js') {
-      // @todo cleanup
       $config_keys = array_flip($config_keys);
     }
     return array_values($config_keys);
@@ -424,7 +423,6 @@ function _noty_messages_get_config($set = 'all', $with_values = FALSE, $message_
       unset($config_keys[$key]);
     }
     $config_keys['MessageTypes'] = $message_types;
-    // @todo cleanup
   }
   return $config_keys;
 }
