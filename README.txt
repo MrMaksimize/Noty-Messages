@@ -17,7 +17,7 @@ Usage:
 
 Once you have enabled the message types, they will be taken over by noty rendering.
 
-You can decided to disable the display of noty style messages on admin pages.
+You can decide to disable the display of noty style messages on admin pages.
 ------------------------------------------------------
 Customization:
 
@@ -32,6 +32,12 @@ In admin, all themes are getting loaded for preview.
 ------------------------------------------------------
 Known issues:
 No Dynamic theme loading / discovery
+
+------------------------------------------------------
+Roadmap:
+1. Bring in Information and confirm dialogs.
+2. Bring in ways to define buttons and callbacks from the UI
+3. Rules integration
 
 ------------------------------------------------------
 
