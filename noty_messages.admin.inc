@@ -33,6 +33,7 @@ function noty_messages_admin_settings() {
       '#description' => t('Please download the noty library from https://github.com/needim/noty and place it in the libraries/noty directory. So that jquery.noty.js file is located in libraries/noty/js/jquery.noty.js'),
     );
     $disabled = TRUE;
+    return $form;
   }
   noty_messages_generate_settings_form($form, 'global', $defaults, $disabled);
   unset($message_types['global']);
