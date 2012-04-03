@@ -43,9 +43,8 @@ function noty_messages_permission() {
  * Implements hook_help().
  */
 function noty_messages_help($path, $arg) {
-  if ($path == 'admin/settings/noty') {
-    return t('Set your options and decide whether you want the noty styled messages
-      to appear on admin pages or not.');
+  if ($path == 'admin/config/user-interface/noty-messages') {
+    return t('Configure Noty Messages');
   }
 }
 
