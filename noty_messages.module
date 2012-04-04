@@ -95,14 +95,10 @@ function noty_messages_theme_registry_alter(&$theme_registry) {
  *   TRUE / FALSE based on whether devel msg or not
  */
 function _noty_messages_devel_check($message) {
-  if (strstr($message, '<pre>') || strstr($message, '<textarea') ||
-    strstr($message, 'krumo')) {
-    // Devel message found.
-    return TRUE;
-  }
-  else {
-    return FALSE;
-  }
+  // Check for devel messages.
+  // @todo some further checking will probably happen in the future.
+  return (strstr($message, "<pre>") || strstr($message, '<textarea') ||
+    strstr($message, 'krumo'));
 }
 
 /**
@@ -150,7 +146,7 @@ function noty_messages_type($type, $messages) {
 function noty_messages_get_custom_css($themelayer = FALSE, $theme = NULL) {
   // Are we looking for core noty css additions or theme mods?
   $file = empty($theme) ? 'noty.css' : $theme . '.css';
-  if ($themelayer == TRUE) {
+  if ($themelayer) {
     // Called from theme function so path_to_theme returns incorrect result.
     global $theme;
     $custom_css = drupal_get_path('theme', $theme) . '/notycss/' . $file;
