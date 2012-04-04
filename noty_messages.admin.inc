@@ -11,7 +11,7 @@
 function noty_messages_admin_settings() {
   // Per message configs
   // Clear out the form first.
-  noty_messages_messages_setup($admin = TRUE);
+  noty_messages_messages_setup(TRUE);
   $form = array();
   $form['#attached']['js'] = array(
     drupal_get_path('module', 'noty_messages') . '/js/noty_admin_form.js',
@@ -104,7 +104,7 @@ function noty_messages_generate_settings_form(&$form, $message_type, $defaults) 
       '#type' => 'checkbox',
       '#title' => t('Use global configuration'),
       '#description' => t('Check to ignore the message settings in this pane and relegate to globals'),
-      '#default_value' => empty($defaults['use_global'][$message_type]) ? FALSE : TRUE,
+      '#default_value' => !empty($defaults['use_global'][$message_type]),
     );
   }
   // Message display.
@@ -318,7 +318,6 @@ function noty_messages_admin_settings_submit($form, &$form_state) {
  *   The values inside the form
  */
 function noty_messages_settings_reset($form, &$form_state) {
-  $message_types = _noty_messages_get_types();
   $defaults = _noty_messages_get_config();
   foreach ($defaults as $key => $value) {
     variable_del('noty_messages_' . $value);

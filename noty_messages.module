@@ -148,13 +148,8 @@ function noty_messages_type($type, $messages) {
  *   A string containing the path to the custom css or default one.
  */
 function noty_messages_get_custom_css($themelayer = FALSE, $theme = NULL) {
-  if (empty($theme)) {
-    // We're looking for core noty css additions.
-    $file = 'noty.css';
-  }
-  else {
-    $file = $theme . '.css';
-  }
+  // Are we looking for core noty css additions or theme mods?
+  $file = empty($theme) ? 'noty.css' : $theme . '.css';
   if ($themelayer == TRUE) {
     // Called from theme function so path_to_theme returns incorrect result.
     global $theme;
@@ -186,7 +181,7 @@ function noty_messages_messages_setup($admin = FALSE) {
   drupal_add_js($lib_path . '/js/jquery.noty.js', $options);
   drupal_add_js($module_path . '/js/noty.js', $options);
   drupal_add_css($lib_path . '/css/jquery.noty.css');
-  $custom_css = noty_messages_get_custom_css($themelayer = TRUE);
+  $custom_css = noty_messages_get_custom_css(TRUE);
   if (!empty($custom_css)) {
     drupal_add_css($custom_css);
   }
@@ -320,8 +315,7 @@ function noty_messages_status_messages($variables) {
 function theme_original_status_messages($vars) {
   $type = $vars['type'];
   $messages = $vars['messages'];
-  $output = '';
-  $output .= "<div class=\"messages $type\">\n";
+  $output = "<div class=\"messages $type\">\n";
   if (count($messages) > 1) {
     $output .= " <ul>\n";
     foreach ($messages as $message) {
