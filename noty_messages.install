@@ -32,7 +32,7 @@ function noty_messages_requirements($phase) {
       $requirements['noty_messages_js'] = array(
         'value' => $t('Missing!'),
         'severity' => REQUIREMENT_ERROR,
-        'description' => $t('Noty library missing. Download the Noty library from <a href="@url">http://needim.github.com/noty/</a> and place in in to sites/all/libraries/noty', array('@url' => 'http://needim.github.com/noty/')),
+        'description' => $t('Please download the !url and place it in the libraries/noty directory. So that jquery.noty.js file is located in libraries/noty/js/jquery.noty.js', array('!url' => l(t('Noty Library'), 'http://needim.github.com/noty'))),
       );
     }
     $requirements['noty_messages_js']['title'] = $t('Noty.js library');
