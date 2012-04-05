@@ -80,6 +80,7 @@ function noty_messages_admin_settings() {
   );
   return $form;
 }
+
 /**
  * Generate settings form
  *
@@ -309,6 +310,7 @@ function noty_messages_admin_settings_submit($form, &$form_state) {
     drupal_set_message(t('The configuration has been saved.'));
   }
 }
+
 /**
  * Callback function for settings reset
  *

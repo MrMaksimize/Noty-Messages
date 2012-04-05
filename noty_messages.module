@@ -222,6 +222,7 @@ function noty_messages_messages_setup($admin = FALSE) {
   }
   drupal_add_js(array('notyMessages' => $js_settings), 'setting');
 }
+
 /**
  * Builds a set of noty messages for a type and returns it
  *
@@ -409,6 +410,7 @@ function _noty_messages_get_config($set = 'all', $with_values = FALSE, $message_
   }
   return $config_keys;
 }
+
 /**
  * Helper function for getting message types
  *
