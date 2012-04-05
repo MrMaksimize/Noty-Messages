@@ -97,7 +97,8 @@ function noty_messages_theme_registry_alter(&$theme_registry) {
 function _noty_messages_devel_check($message) {
   // Check for devel messages.
   // @todo some further checking will probably happen in the future.
-  return (strstr($message, "<pre>") || strstr($message, '<textarea') ||
+  // If checking more than this, use regex and be done with it.
+  return (bool) (strstr($message, "<pre>") || strstr($message, '<textarea') ||
     strstr($message, 'krumo'));
 }
 
