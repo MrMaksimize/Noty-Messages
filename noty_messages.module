@@ -107,29 +107,26 @@ function _noty_messages_devel_check($message) {
  *
  * @param string $type
  *   Type of messages
- * @param array $messages
- *   Array of messages
  *
  * @return BOOL
  *   a BOOL deciding if noty messages should be rendered of regular ones
  */
-function noty_messages_type($type, $messages) {
+function noty_messages_type($type) {
   // Assume TRUE.
-  $is_noty = TRUE;
   // Check type visibility.
-  $active_types = variable_get('noty_messages_is_noty', _noty_messages_get_default(array($type), NOTY_IS_NOTY));
+  $active_types = variable_get('noty_messages_is_noty', _noty_messages_get_default($type, NOTY_IS_NOTY));
   if (empty($active_types[$type])) {
     return FALSE;
   }
   // Should the messages be shown on admin paths?
   if (path_is_admin(current_path())) {
-    $admin_path_settings = variable_get('noty_messages_admin_path_disable', _noty_messages_get_default(array($type), NOTY_ADMIN_PATH_DISABLE));
+    $admin_path_settings = variable_get('noty_messages_admin_path_disable', _noty_messages_get_default($type, NOTY_ADMIN_PATH_DISABLE));
     if (!empty($admin_path_settings[$type])) {
       return FALSE;
     }
   }
   // If no other conditions have return FALSE by now, show type.
-  return $is_noty;
+  return TRUE;
 }
 
 /**
@@ -254,17 +251,15 @@ function noty_messages_build_messages($type, $messages) {
  */
 function noty_messages_status_messages($variables) {
   $display = $variables['display'];
-  $output = '';
   $noties = array();
   $originals = array();
   $devels = array();
-  $noty_out = '';
   $originals_out = '';
   $devels_out = '';
   $displayed_messages = drupal_get_messages($display);
 
   foreach ($displayed_messages as $type => $messages) {
-    if (noty_messages_type($type, $messages)) {
+    if (noty_messages_type($type)) {
       $noties[$type] = noty_messages_build_messages($type, $messages);
       if (!empty($noties[$type]['devels'])) {
         $devels[$type] = $noties[$type]['devels'];
@@ -276,26 +271,28 @@ function noty_messages_status_messages($variables) {
       $originals[$type] = $messages;
     }
   }
-  // Render noties first.
+  // Filter out empty data from arrays
   $noties = array_filter($noties);
   $originals = array_filter($originals);
   $devels = array_filter($devels);
+  // Noty rendering handled by JS, so let it take over.
   if (!empty($noties)) {
-    $jq_inline = noty_messages_messages_setup($noties);
     drupal_add_js(array('notyMessagesNoties' => $noties), array('type' => 'setting', 'cache' => FALSE));
   }
+  // Messages not of Noty Type are handled by the theming function.
   if (!empty($originals)) {
     foreach ($originals as $type => $messages) {
       $originals_out .= theme('original_status_messages', array('type' => $type, 'messages' => $messages));
     }
   }
+  // Devel Messages are already rendered.
   if (!empty($devels)) {
     foreach ($devels as $type => $messages) {
       $devels_out .= implode(' ', $messages);
     }
   }
-  $output = $originals_out . $devels_out;
-  return $output;
+  // Return non-noty (originals) and devel msgs to the page.
+  return $originals_out . $devels_out;
 }
 
 /**

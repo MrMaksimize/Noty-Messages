@@ -8,9 +8,8 @@
  * Implements hook_uninstall().
  */
 function noty_messages_uninstall() {
-  module_load_include('module', 'noty_messages', 'noty_messages');
-  $config_keys = _noty_messages_get_config();
-  foreach ($config_keys as $key) {
+  module_load_include('module', 'noty_messages');
+  foreach (_noty_messages_get_config() as $key) {
     variable_del('noty_messages_' . $key);
   }
 }
