@@ -13,6 +13,11 @@ function noty_messages_admin_settings() {
   // Clear out the form first.
   noty_messages_messages_setup(TRUE);
   $form = array();
+  // Get system settings form defaults.
+  $form = system_settings_form($form);
+  // Override the submit handler.
+  $form['#submit'] = array('noty_messages_admin_settings_submit');
+  // Attach for specific js.
   $form['#attached']['js'] = array(
     drupal_get_path('module', 'noty_messages') . '/js/noty_admin_form.js',
   );
@@ -66,17 +71,10 @@ function noty_messages_admin_settings() {
     // @todo buttons
     // @todo jquery_ui_easing
   }// foreach
-  $form['actions'] = array(
-    '#type' => 'actions',
-    'submit' => array(
-      '#type' => 'submit',
-      '#value' => t('Save configuration'),
-    ),
-    'reset' => array(
-      '#type' => 'submit',
-      '#value' => t('Reset all settings'),
-      '#submit' => array('noty_messages_settings_reset'),
-    ),
+  $form['actions']['reset'] = array(
+    '#type' => 'submit',
+    '#value' => t('Reset all settings'),
+    '#submit' => array('noty_messages_settings_reset'),
   );
   return $form;
 }
