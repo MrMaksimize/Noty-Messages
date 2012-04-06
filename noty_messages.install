@@ -21,7 +21,7 @@ function noty_messages_requirements($phase) {
   $requirements = array();
   if ($phase == 'runtime') {
     $t = get_t();
-    // Check for the Stripe PHP library.
+    // Check for the Noty.js library
     if (file_exists(libraries_get_path('noty') . '/js/jquery.noty.js')) {
       $requirements['noty_messages_js'] = array(
         'value' => $t('Installed'),
