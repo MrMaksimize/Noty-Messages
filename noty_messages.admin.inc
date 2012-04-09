@@ -36,7 +36,7 @@ function noty_messages_admin_settings() {
       '#type' => 'fieldset',
       '#title' => t('Noty settings'),
       '#weight' => '-10',
-      '#description' => t('Please download the !url and place it in the libraries/noty directory. So that jquery.noty.js file is located in libraries/noty/js/jquery.noty.js', array('!url' => l(t('Noty Library'), 'http://needim.github.com/noty'))),
+      '#description' => t('Please download the !url and place it in the libraries/noty directory. So that jquery.noty.js file is located in libraries/noty/js/jquery.noty.js', array('!url' => l(t('Noty Library'), 'https://github.com/needim/noty/'))),
     );
     return $form;
   }
@@ -57,6 +57,7 @@ function noty_messages_admin_settings() {
       'noty_theme_default' => t('Default'),
       'noty_theme_mitgux' => t('Mitgux'),
       'noty_theme_twitter' => t('Twitter Bootstrap'),
+      'noty_theme_facebook' => t('Facebook'),
       'noty_theme_custom' => t('Custom'),
     ),
     '#description' => t('Theme to use for these messages. Create a file called noty_theme_custom.css in your theme/notycss directory to use custom'),
@@ -177,6 +178,7 @@ function noty_messages_generate_settings_form(&$form, $message_type, $defaults) 
     '#size' => 30,
     '#description' => t('The time in milliseconds for the notice to fade in and fade out'),
     '#default_value' => $defaults['speed'][$message_type],
+    '#element_validate' => array('element_validate_integer_positive'),
     '#states' => array(
       'invisible' => array(
         'input[name="settings[' . $message_type . '][use_global]"]' => array('checked' => TRUE),
@@ -193,6 +195,7 @@ function noty_messages_generate_settings_form(&$form, $message_type, $defaults) 
     '#size' => 30,
     '#description' => t('The time in milliseconds the notice will display for, before fading out.'),
     '#default_value' => $defaults['timeout'][$message_type],
+    '#element_validate' => array('element_validate_integer_positive'),
     '#states' => array(
       'invisible' => array(
         'input[name="settings[' . $message_type . '][use_global]"]' => array('checked' => TRUE),
@@ -270,7 +273,7 @@ function noty_messages_generate_settings_form(&$form, $message_type, $defaults) 
 /**
  * Form submission handler for the configuration form.
  *
- * @see noty_messages_settings().
+ * @see noty_messages_settings()
  */
 function noty_messages_admin_settings_submit($form, &$form_state) {
   if (!form_get_errors()) {

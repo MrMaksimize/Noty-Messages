@@ -1,26 +1,48 @@
-Install:
 
-Download the module's dependencies - jquery_update and libraries module.
+CONTENTS OF THIS FILE
+---------------------
 
-Download the noty library from github and place it in the libraries directory.
+ * Introduction
+ * Installation
+ * Customization
+ * Design Decisions
 
-The path to noty.js should be sites/all/libraries/noty/js/jquery.noty.js
 
-Download the module and untar into your site's modules directory.
+INTRODUCTION
+------------
 
-Go to admin/modules/list and enable the module.
+Current Maintainers:
+MrMaksimize (http://drupal.org/user/801596)
+iler (http://drupal.org/user/726092)
 
-Go to admin/config/user-interface/noty-messages and enable the message types you
-would like to be
-taken over by noty.
-------------------------------------------------------
-Usage:
+Noty Messages is a library that brings in cuztomization available in the noty
+jQuery plugin (http://needim.github.com/noty/) into drupal, and allows the the
+library's rendering of messages overtake Drupal's default message theming style.
+The goal of the module is be extremely flexible and allow overriding of only
+certain Drupal message types if that's what the user wishes.
 
-Once you have enabled the message types, they will be taken over by noty
-rendering.
+If you would like to test out the library, visit http://needim.github.com/noty/
 
-You can decide to disable the display of noty style messages on admin pages.
-------------------------------------------------------
+
+INSTALLATION
+------------
+
+The Noty Messages module has 3 dependencies,
+jQuery Update (http://drupal.org/project/jquery_update)
+Libraries module (http://drupal.org/project/libraries)
+Noty jQuery Plugin (https://github.com/needim/noty/).
+
+1. Install and enable Libraries module and jQuery Update module.
+2. Make a directory in sites/all/ (or for multisite the site name) called libraries.
+3. Visit https://github.com/needim/noty and clone the master branch into your libraries folder.
+4. The path of the jquery.noty.js file should be sites/all/libraries/noty/js/jquery.noty.js (or adjusted for multisite respectively)
+5. Visit admin/config/user-interface/noty-messages to adjust any needed configurations.
+6. You're good to go!
+
+
+CUSTOMIZATION
+-------------
+
 Customization:
 
 There are several built in themes inside the noty library.  You can use those or
@@ -33,17 +55,9 @@ one of the original theme files over and work on it.
 
 In admin, all themes are getting loaded for preview.
 
-------------------------------------------------------
-Known issues:
-No Dynamic theme loading / discovery
+DESIGN DECISIONS
+----------------
 
-------------------------------------------------------
-Roadmap:
-1. Bring in Information and confirm dialogs.
-2. Bring in ways to define buttons and callbacks from the UI
-3. Rules integration
+While there are no hooks currently implemented, the module was designed in such a way that it would allow for pretty specific hooking if needed.
+So if you would see a need for a hook somewhere, either submit an issue or a patch!
 
-------------------------------------------------------
-
-This module was written by MrMaksimize.
-It uses code from https://github.com/needim/noty

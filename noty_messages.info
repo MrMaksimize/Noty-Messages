@@ -3,3 +3,4 @@ description = "A Noty based override of Drupal's core message system"
 core = 7.x
 dependencies[] = libraries
 dependencies[] = jquery_update
+configure = admin/config/user-interface/noty-messages
