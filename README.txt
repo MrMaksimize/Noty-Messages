@@ -46,18 +46,16 @@ CUSTOMIZATION
 Customization:
 
 There are several built in themes inside the noty library.  You can use those or
-you can override them
-by putting files with the same names into your theme/notycss/ directory.
+you can override them just like you would any normal css file.
 
-If you choose custom, you have to make a file in that directory called
-noty_theme_custom.css and copy
-one of the original theme files over and work on it.
+If you choose custom, you have to make a file in the directory your_theme/css/noty_theme_custom.css
+and write your own theme if you choose to do so.
 
-In admin, all themes are getting loaded for preview.
+In admin, all themes are getting loaded for preview including custom, however any css customization you
+choose to make to the default themes will not show up in admin preview.
 
 DESIGN DECISIONS
 ----------------
 
 While there are no hooks currently implemented, the module was designed in such a way that it would allow for pretty specific hooking if needed.
 So if you would see a need for a hook somewhere, either submit an issue or a patch!
-

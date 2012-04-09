@@ -60,7 +60,7 @@ function noty_messages_admin_settings() {
       'noty_theme_facebook' => t('Facebook'),
       'noty_theme_custom' => t('Custom'),
     ),
-    '#description' => t('Theme to use for these messages. Create a file called noty_theme_custom.css in your theme/notycss directory to use custom'),
+    '#description' => t('Theme to use for these messages. Create a file called noty_theme_custom.css in your theme/css directory to use custom'),
     '#weight' => '-4',
     '#default_value' => $defaults['theme']['global'],
   );
