@@ -4,10 +4,9 @@ var notyMessages = notyMessages || {};
   Drupal.behaviors.notyMessagesRenderMessages = {
     attach: function(context, settings) {
       // Don't deal with config here.
-      allMessages = settings.notyMessagesNoties;
-      for (var type in allMessages){
+      for (var type in settings.notyMessagesNoties){
         // Pre construct the settings for noty.
-        notyMessages.renderType(type, allMessages[type], settings.notyMessages);
+        notyMessages.renderType(type, settings.notyMessagesNoties[type], settings.notyMessages);
       }
     }
   }
@@ -22,9 +21,6 @@ var notyMessages = notyMessages || {};
       closeOnSelfClick: config.notyClickClose[typeName],
       modal: config.notyModal[typeName],
       theme: config.notyTheme[typeName]
-    }
-    if (!(typeData instanceof Array)){
-      typeData = new Array(typeData);
     }
     for (message in typeData){
       // Set the text.
