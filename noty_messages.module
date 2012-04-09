@@ -2,14 +2,15 @@
 
 /**
  * @file
- * noty Messages
- * A noty based override of Drupal's core message system
+ * noty_messages.
+ * A noty based override of Drupal's core message system.
  */
 
 /**
  * Define Default Values
  */
-// Passed to JS.
+
+/* Passed to JS */
 define('NOTY_LAYOUT', 'topRight');
 define('NOTY_TEXT_ALIGN', 'left');
 define('NOTY_SPEED', 500);
@@ -20,7 +21,7 @@ define('NOTY_MODAL', FALSE);
 define('NOTY_TYPE', 'success');
 define('NOTY_THEME', 'noty_theme_default');
 
-// Config.
+/* Config */
 define('NOTY_ADMIN_PATH_DISABLE', FALSE);
 define('NOTY_IS_NOTY', FALSE);
 define('NOTY_USE_GLOBAL', TRUE);
@@ -31,10 +32,10 @@ define('NOTY_USE_GLOBAL', TRUE);
 function noty_messages_permission() {
   return array(
     'view noty messages' => array(
-      'title' => 'View noty messages',
+      'title' => t('View noty messages'),
     ),
     'administer noty messages' => array(
-      'title' => 'Administer noty messages',
+      'title' => t('Administer noty messages'),
     ),
   );
 }
@@ -55,7 +56,7 @@ function noty_messages_menu() {
   $items = array();
   $items['admin/config/user-interface/noty-messages'] = array(
     'title' => 'Noty Messages',
-    'description' => 'Settings to control noty messages',
+    'description' => t('Settings to control noty messages'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('noty_messages_admin_settings'),
     'access callback' => 'user_access',
@@ -86,13 +87,13 @@ function noty_messages_theme_registry_alter(&$theme_registry) {
 
 
 /**
- * Checks for the existence of devel code
+ * Checks for the existence of devel code.
  *
  * @param string $message
- *   message string
+ *   Message string.
  *
  * @return BOOL
- *   TRUE / FALSE based on whether devel msg or not
+ *   TRUE / FALSE based on whether devel message or not.
  */
 function _noty_messages_devel_check($message) {
   // Check for devel messages.
@@ -103,13 +104,13 @@ function _noty_messages_devel_check($message) {
 }
 
 /**
- * Determines if a regular message should be returned or a noty message
+ * Determines if a regular message should be returned or a noty message.
  *
  * @param string $type
- *   Type of messages
+ *   Type of messages.
  *
  * @return BOOL
- *   a BOOL deciding if noty messages should be rendered of regular ones
+ *   A TRUE / FALSE if noty messages should be rendered instead of regular ones.
  */
 function noty_messages_type($type) {
   // Assume TRUE.
@@ -196,7 +197,7 @@ function noty_messages_messages_setup($admin = FALSE) {
     }
   }
   // If this is coming from admin, load all css files.
-  // @todo should have some kind of hooking here or a get all themes function.
+  // @todo Should have some kind of hooking here or a get all themes function.
   else {
     $themes = array(
       'noty_theme_default',
@@ -217,22 +218,22 @@ function noty_messages_messages_setup($admin = FALSE) {
   $message_types = _noty_messages_get_types();
   $config = _noty_messages_get_config('js', TRUE, $message_types);
   foreach ($config as $key => $value) {
-    // Do some string replacement so js is nice.
+    // Do some string replacement so JS is nice.
     $js_settings['noty' . $key] = $value;
   }
   drupal_add_js(array('notyMessages' => $js_settings), 'setting');
 }
 
 /**
- * Builds a set of noty messages for a type and returns it
+ * Builds a set of noty messages for a type and returns it.
  *
  * @param string $type
- *   type of message
+ *   Type of message.
  * @param array $messages
- *   array of messages to build
+ *   Array of messages to build.
  *
  * @return array
- *   an array of messages
+ *   An array of messages.
  */
 function noty_messages_build_messages($type, $messages) {
   $noties_of_type = array();
@@ -248,7 +249,10 @@ function noty_messages_build_messages($type, $messages) {
 }
 
 /**
- * Decides which messages should be noties and builds for theme
+ * Decides which messages should be noties and builds for theme.
+ *
+ * @param $variables
+ *   Array of theme variables.
  */
 function noty_messages_status_messages($variables) {
   $display = $variables['display'];
@@ -272,7 +276,7 @@ function noty_messages_status_messages($variables) {
       $originals[$type] = $messages;
     }
   }
-  // Filter out empty data from arrays
+  // Filter out empty data from arrays.
   $noties = array_filter($noties);
   $originals = array_filter($originals);
   $devels = array_filter($devels);
@@ -292,17 +296,17 @@ function noty_messages_status_messages($variables) {
       $devels_out .= implode(' ', $messages);
     }
   }
-  // Return non-noty (originals) and devel msgs to the page.
+  // Return non-noty (originals) and devel messages to the page.
   return $originals_out . $devels_out;
 }
 
 /**
- * Return a themed set of status and/or error messages grouped by type
+ * Return a themed set of status and/or error messages grouped by type.
  *
  * This is the original output which we use if noty messages is turned off.
  *
  * @param array $vars
- *   Array of theme variables
+ *   Array of theme variables.
  *
  * @return string
  *   A string containing the formatted messages.
@@ -326,15 +330,15 @@ function theme_original_status_messages($vars) {
 }
 
 /**
- * Helper function for building arrays to go into the variables
+ * Helper function for building arrays to go into the variables.
  *
  * @param array $message_types
- *   Array of message types to set the value for
+ *   Array of message types to set the value for.
  * @param mixed $value
- *   The value to set
+ *   The value to set.
  *
  * @return array
- *   a constructed array of values
+ *   Constructed array of values.
  */
 function _noty_messages_get_default($message_types, $value) {
   $return = array();
@@ -351,21 +355,21 @@ function _noty_messages_get_default($message_types, $value) {
 }
 
 /**
- * Helper function to retrieve configuration keys
+ * Helper function to retrieve configuration keys.
  *
  * @param string $set
  *   One of 'all, js, single, global'.
- *   all = All Configuration
- *   js = javascript settings
- *   single = only for message types, exclude globals
- *   global = only for global config, exclude message types
+ *   all = All Configuration.
+ *   js = Javascript settings.
+ *   single = Only for message types, exclude globals.
+ *   global = Only for global config, exclude message types
  * @param bool $with_values
- *   Whether to get the values or just return an array of keys
+ *   Whether to get the values or just return an array of keys.
  * @param array $message_types
- *   An array of message types to get configuration build for
+ *   An array of message types to get configuration build for.
  *
  * @return array
- *   An array of config settings
+ *   An array of config settings.
  */
 function _noty_messages_get_config($set = 'all', $with_values = FALSE, $message_types = NULL) {
   $config_keys = array(
@@ -412,10 +416,10 @@ function _noty_messages_get_config($set = 'all', $with_values = FALSE, $message_
 }
 
 /**
- * Helper function for getting message types
+ * Helper function for getting message types.
  *
  *  @param bool $include_globals
- *   Whether globals should be included
+ *   Whether globals should be included.
  */
 function _noty_messages_get_types($include_globals = FALSE) {
   $types = drupal_map_assoc(array('status', 'warning', 'error'));

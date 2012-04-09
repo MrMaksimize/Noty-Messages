@@ -1,15 +1,15 @@
 (function($) {
   Drupal.behaviors.noty_messages = {
     attach: function(context) {
-      // button click
+      // Button click.
       $('.test-noty-messages').click(function(event){
         event.preventDefault();
         event.stopPropagation();
-        // get name
+        // Get name.
         var name = $(this).attr('name');
-        // get current actives
+        // Get current actives
         if (name == 'global' || $('#edit-settings-global-is-noty-' + name).is(':checked')){
-          // change settings
+          // Change settings.
           var notySettings = Drupal.settings.notyMessages;
           notySettings.notyType[name] = $('#edit-settings-' + name + '-type :selected').val();
           notySettings.notyLayout[name] = $('#edit-settings-' + name + '-layout :selected').val();

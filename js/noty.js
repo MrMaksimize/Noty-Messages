@@ -3,10 +3,10 @@ var notyMessages = notyMessages || {};
 (function($) {
   Drupal.behaviors.notyMessagesRenderMessages = {
     attach: function(context, settings) {
-      // don't deal with config here
+      // Don't deal with config here.
       allMessages = settings.notyMessagesNoties;
       for (var type in allMessages){
-        // pre construct the settings for noty
+        // Pre construct the settings for noty.
         notyMessages.renderType(type, allMessages[type], settings.notyMessages);
       }
     }
@@ -27,7 +27,7 @@ var notyMessages = notyMessages || {};
       typeData = new Array(typeData);
     }
     for (message in typeData){
-      // set the text
+      // Set the text.
       notySettings.text = typeData[message];
       noty(notySettings);
     }

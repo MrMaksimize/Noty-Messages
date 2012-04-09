@@ -9,7 +9,7 @@
  *   Array of the system settings form.
  */
 function noty_messages_admin_settings() {
-  // Per message configs
+  // Per message configs.
   // Clear out the form first.
   noty_messages_messages_setup(TRUE);
   $form = array();
@@ -17,7 +17,7 @@ function noty_messages_admin_settings() {
   $form = system_settings_form($form);
   // Override the submit handler.
   $form['#submit'] = array('noty_messages_admin_settings_submit');
-  // Attach for specific js.
+  // Attach for specific JS.
   $form['#attached']['js'] = array(
     drupal_get_path('module', 'noty_messages') . '/js/noty_admin_form.js',
   );
@@ -68,9 +68,9 @@ function noty_messages_admin_settings() {
   $defaults = _noty_messages_get_config('single', TRUE, $message_types);
   foreach ($message_types as $message_type) {
     noty_messages_generate_settings_form($form, $message_type, $defaults);
-    // @todo buttons
-    // @todo jquery_ui_easing
-  }// foreach
+    // @todo Buttons.
+    // @todo jquery_ui_easing.
+  }
   $form['actions']['reset'] = array(
     '#type' => 'submit',
     '#value' => t('Reset all settings'),
@@ -80,14 +80,14 @@ function noty_messages_admin_settings() {
 }
 
 /**
- * Generate settings form
+ * Generate settings form.
  *
  * @param array $form
- *   The original form array
+ *   The original form array.
  * @param string $message_type
- *   The message type fieldset for which the form is being generated
+ *   The message type fieldset for which the form is being generated.
  * @param array $defaults
- *   The default variable configuration for this message type
+ *   The default variable configuration for this message type.
  */
 function noty_messages_generate_settings_form(&$form, $message_type, $defaults) {
   $settings_key = $message_type;
@@ -270,7 +270,7 @@ function noty_messages_generate_settings_form(&$form, $message_type, $defaults) 
 /**
  * Form submission handler for the configuration form.
  *
- * @see noty_messages_settings()
+ * @see noty_messages_settings().
  */
 function noty_messages_admin_settings_submit($form, &$form_state) {
   if (!form_get_errors()) {
@@ -310,12 +310,12 @@ function noty_messages_admin_settings_submit($form, &$form_state) {
 }
 
 /**
- * Callback function for settings reset
+ * Callback function for settings reset.
  *
  * @param array $form
- *   The admin form array
+ *   The admin form array.
  * @param array $form_state
- *   The values inside the form
+ *   The values inside the form.
  */
 function noty_messages_settings_reset($form, &$form_state) {
   $defaults = _noty_messages_get_config();
